@@ -1,5 +1,6 @@
 import React from 'react'
 import { ArrowRight, Github, Linkedin, Mail, Download, Code, Briefcase, User, MessageSquare } from 'lucide-react';
+import profile from '../assets/profile.png'
 
 const Hero = () => {
     return (
@@ -8,15 +9,15 @@ const Hero = () => {
                 <div className="mx-auto text-center bg-bg-secondary px-[10%] py-[3%] rounded-3xl mb-[5%]">
                     <div className="mb-8">
                         <img
-                            src="https://via.placeholder.com/150"
+                            src={profile}
                             alt="Profile"
                             className="w-32 h-32 rounded-full mx-auto mb-6 border-4 border-accent-primary"
                         />
                         <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-text-primary mb-4">
-                            Hi, I'm <span className="text-accent-primary">John Doe</span>
+                            Hi, I'm <span className="text-accent-primary">Shrutik Gupta</span>
                         </h1>
                         <p className="text-xl sm:text-2xl text-text-secondary mb-8">
-                            Full Stack Developer & UI/UX Designer
+                            Full Stack Developer
                         </p>
                         <p className="text-lg text-text-secondary max-w-2xl mx-auto mb-8">
                             I create beautiful, functional, and user-centered digital experiences.
@@ -25,7 +26,12 @@ const Hero = () => {
                     </div>
 
                     <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
-                        <button className="bg-accent-primary text-text-inverse px-8 py-3 rounded-lg font-semibold hover:bg-accent-secondary transition-colors flex items-center gap-2">
+                        <button onClick={() => {
+                            const contactSection = document.getElementById('contact');
+                            if (contactSection) {
+                                contactSection.scrollIntoView({ behavior: 'smooth' });
+                            }
+                        }} className="bg-accent-primary text-text-inverse px-8 py-3 rounded-lg font-semibold hover:bg-accent-secondary transition-colors flex items-center gap-2">
                             Get In Touch <ArrowRight className="w-4 h-4" />
                         </button>
                         <button className="border border-border-default text-text-primary px-8 py-3 rounded-lg font-semibold hover:bg-bg-hover transition-colors flex items-center gap-2">
@@ -34,13 +40,13 @@ const Hero = () => {
                     </div>
 
                     <div className="flex justify-center gap-6">
-                        <a href="#" className="text-text-secondary hover:text-accent-primary transition-colors">
+                        <a href="https://github.com/shrutik-gupta" target='_blank' className="text-text-secondary hover:text-accent-primary transition-colors">
                             <Github className="w-6 h-6" />
                         </a>
-                        <a href="#" className="text-text-secondary hover:text-accent-primary transition-colors">
+                        <a href="https://www.linkedin.com/in/shrutik-gupta" target='_blank' className="text-text-secondary hover:text-accent-primary transition-colors">
                             <Linkedin className="w-6 h-6" />
                         </a>
-                        <a href="#" className="text-text-secondary hover:text-accent-primary transition-colors">
+                        <a href="mailto:shrutikgupta07@gmail.com" target='_blank' className="text-text-secondary hover:text-accent-primary transition-colors">
                             <Mail className="w-6 h-6" />
                         </a>
                     </div>
