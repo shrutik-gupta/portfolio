@@ -1,8 +1,13 @@
 import React from 'react'
 import { ArrowRight, Github, Linkedin, Mail, Download, Code, Briefcase, User, MessageSquare } from 'lucide-react';
 import profile from '../assets/profile.png'
+import process from 'process'
 
 const Hero = () => {
+const backendBaseUrl = process.env.REACT_APP_BACKEND_URL || 'http://localhost:3000';    
+    console.log('Backend URL:', backendBaseUrl); // Add this line
+    console.log('All env vars:', process.env); // Add this line
+
     return (
         <div>
             <section id="hero" className="min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8">
@@ -34,9 +39,15 @@ const Hero = () => {
                         }} className="bg-accent-primary text-text-inverse px-8 py-3 rounded-lg font-semibold hover:bg-accent-secondary transition-colors flex items-center gap-2">
                             Get In Touch <ArrowRight className="w-4 h-4" />
                         </button>
-                        <button className="border border-border-default text-text-primary px-8 py-3 rounded-lg font-semibold hover:bg-bg-hover transition-colors flex items-center gap-2">
+                        <a
+                            href={`${backendBaseUrl}/uploads/resume.pdf`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="border border-border-default text-text-primary px-8 py-3 rounded-lg font-semibold hover:bg-bg-hover transition-colors flex items-center gap-2"
+                        >
                             Download CV <Download className="w-4 h-4" />
-                        </button>
+                        </a>
+
                     </div>
 
                     <div className="flex justify-center gap-6">
