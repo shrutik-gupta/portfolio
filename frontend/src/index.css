@@ -1,0 +1,105 @@
+@import url('https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body{
+   font-family: "Raleway", sans-serif;
+}
+
+/* ————————————————————————————  
+   Light mode: soft neutrals + gentle accent  
+———————————————————————————— */
+:root {
+  /* Backgrounds */
+  --color-bg-primary: 250 247 243;    /* Off-white ivory */
+  --color-bg-secondary: 244 240 234;  /* Pale almond */
+  --color-bg-tertiary: 238 233 225;   /* Warm linen */
+  --color-bg-card: 255 255 255;       /* Clean white */
+  --color-bg-surface: 250 247 243;    /* Ivory */
+  --color-bg-hover: 244 240 234;      /* Almond */
+
+  /* Text */
+  --color-text-primary: 51 49 47;     /* Charcoal gray */
+  --color-text-secondary: 107 101 99; /* Slate gray */
+  --color-text-muted: 156 150 147;    /* Soft gray */
+  --color-text-inverse: 255 255 255;  /* White */
+
+  /* Borders */
+  --color-border-default: 226 221 217; /* Light taupe */
+  --color-border-hover: 210 205 200;   /* Medium taupe */
+  --color-border-focus: 203 93 93;     /* Warm coral */
+
+  /* Accents */
+  --color-accent-primary: 203 93 93;   /* Coral */
+  --color-accent-secondary: 123 182 169; /* Seafoam teal */
+  --color-accent-primary-hover: 186 85 85;  /* Deep coral */
+  --color-accent-secondary-hover: 105 156 142; /* Deep teal */
+
+  /* Status */
+  --color-success: 106 170 100;    /* Soft green */
+  --color-warning: 214 135 65;     /* Warm amber */
+  --color-error: 192 75 75;        /* Dusty red */
+
+  /* Shadows */
+  --color-shadow-light: 0 0 0 / 0.05;
+  --color-shadow-medium: 0 0 0 / 0.15;
+}
+
+/* ————————————————————————————  
+   Dark mode: muted charcoal + warmed accents  
+———————————————————————————— */
+.dark {
+  /* Backgrounds */
+  --color-bg-primary: 33 31 30;     /* Rich charcoal */
+  --color-bg-secondary: 43 40 38;   /* Dark slate */
+  --color-bg-tertiary: 53 49 46;    /* Deep taupe */
+  --color-bg-card: 43 40 38;        /* Slate */
+  --color-bg-surface: 53 49 46;     /* Taupe */
+  --color-bg-hover: 63 58 54;       /* Dark linen */
+
+  /* Text */
+  --color-text-primary: 242 239 235;  /* Ivory white */
+  --color-text-secondary: 206 201 196;/* Warm gray */
+  --color-text-muted: 156 150 147;    /* Soft gray */
+  --color-text-inverse: 33 31 30;     /* Charcoal */
+
+  /* Borders */
+  --color-border-default: 63 58 54;   /* Deep linen */
+  --color-border-hover: 82 76 71;     /* Dark taupe */
+  --color-border-focus: 203 93 93;    /* Coral */
+
+  /* Accents */
+  --color-accent-primary: 203 93 93;   /* Coral */
+  --color-accent-secondary: 123 182 169; /* Seafoam teal */
+  --color-accent-primary-hover: 186 85 85;  /* Deep coral */
+  --color-accent-secondary-hover: 105 156 142; /* Deep teal */
+
+  /* Status */
+  --color-success: 106 170 100;    /* Soft green */
+  --color-warning: 214 135 65;     /* Warm amber */
+  --color-error: 192 75 75;        /* Dusty red */
+
+  /* Shadows */
+  --color-shadow-light: 0 0 0 / 0.2;
+  --color-shadow-medium: 0 0 0 / 0.4;
+}
+
+/* ————————————————————————————  
+   Gradient helpers  
+———————————————————————————— */
+:root {
+  --gradient-accent: linear-gradient(135deg, 
+      rgb(var(--color-accent-primary)) 0%, 
+      rgb(var(--color-accent-secondary)) 100%);
+
+  --gradient-bg-light: linear-gradient(135deg, 
+      rgb(var(--color-bg-primary)) 0%, 
+      rgb(var(--color-bg-secondary)) 50%, 
+      rgb(var(--color-bg-tertiary)) 100%);
+
+  --gradient-bg-dark: linear-gradient(135deg, 
+      rgb(var(--color-bg-primary)) 0%, 
+      rgb(var(--color-bg-secondary)) 50%, 
+      rgb(var(--color-bg-tertiary)) 100%);
+}

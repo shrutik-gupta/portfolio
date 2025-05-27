@@ -1,0 +1,31 @@
+// App.js or main application file
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { ThemeProvider } from './contexts/ThemeContext';
+import Preference from './pages/Preference';
+import Home from './pages/Home';
+import Projects from './pages/Projects';
+import Experience from './pages/Experience';
+import ContactMe from './pages/ContactMe';
+import About from './pages/About';
+
+function App() {
+  return (
+    <ThemeProvider>
+      <Router>
+        <div className="min-h-screen bg-bg-primary text-text-primary transition-colors duration-300">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/projects" element={<Projects />} />
+            <Route path="/experience" element={<Experience />} />
+            <Route path="/contact" element={<ContactMe />} />
+            <Route path="/preferences" element={<Preference />} />
+          </Routes>
+        </div>
+      </Router>
+    </ThemeProvider>
+  );
+}
+
+export default App;
