@@ -13,12 +13,9 @@ const Navbar = () => {
     setIsMobileMenuOpen(false);
 
     if (path === '/' && sectionId === null) {
-      // Handle home button click - go to home and scroll to top
       if (location.pathname === '/') {
-        // Already on home page, just scroll to top
         window.scrollTo({ top: 0, behavior: 'smooth' });
       } else {
-        // Navigate to home page first, then scroll to top
         navigate('/');
         setTimeout(() => {
           window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -58,14 +55,13 @@ const Navbar = () => {
     <nav className="sticky top-0 z-50 backdrop-blur-md transition-all duration-300 py-[1%]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-fit">
-          {/* Logo */}
+
           <Link to="/" className="flex items-center gap-2 text-text-primary">
             <div className="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center">
               <span className="text-text-primary font-bold">SG</span>
             </div>
           </Link>
 
-          {/* Desktop Navigation Links */}
           <div className="hidden md:flex items-center gap-1">
             <button onClick={() => handleNavigation('/')} className={linkClass}>
               <Home className="w-4 h-4" />
@@ -94,11 +90,10 @@ const Navbar = () => {
 
             <Link to="/preferences" className={linkClass}>
               <Settings className="w-4 h-4" />
-              <span>Settings</span>
+              <span>Preference</span>
             </Link>
           </div>
 
-          {/* Mobile Hamburger Button */}
           <div className="md:hidden flex items-center">
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
