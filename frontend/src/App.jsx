@@ -8,6 +8,7 @@ import Projects from './pages/Projects';
 import Experience from './pages/Experience';
 import ContactMe from './pages/ContactMe';
 import About from './pages/About';
+import NotFound from './pages/NotFound';
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
             <Route path="/experience" element={<Experience />} />
             <Route path="/contact" element={<ContactMe />} />
             <Route path="/preferences" element={<Preference />} />
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </div>
       </Router>

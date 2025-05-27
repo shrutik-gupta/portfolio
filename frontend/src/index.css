@@ -100,3 +100,7 @@ body{
       rgb(var(--color-bg-secondary)) 50%, 
       rgb(var(--color-bg-tertiary)) 100%);
 }
+
+#hero {
+    contain: paint;
+}
