@@ -11,7 +11,7 @@ const Hero = () => {
             <div className="absolute inset-0 z-0">
                 <HeroParticle />
             </div>
-            <div className="relative mx-auto text-center bg-bg-secondary px-[10%] py-[3%] rounded-3xl mb-[5%] z-10"> {/* Added relative and z-10 for content to be above particles */}
+            <div className="relative mx-auto text-center bg-bg-secondary px-[10%] py-[3%] rounded-3xl mb-[5%] z-10 opacity-85"> {/* Added relative and z-10 for content to be above particles */}
                 <div className="mb-8">
                     <img
                         src={profile}
