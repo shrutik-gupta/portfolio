@@ -7,9 +7,6 @@ body{
    font-family: "Raleway", sans-serif;
 }
 
-/* ————————————————————————————  
-   Light mode: soft neutrals + gentle accent  
-———————————————————————————— */
 :root {
   /* Backgrounds */
   --color-bg-primary: 250 247 243;    /* Off-white ivory */

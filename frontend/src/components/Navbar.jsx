@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Moon, Sun, Settings, Home, Info, Briefcase, User, Mail, Menu, X, AppWindow, AppWindowIcon } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
+import logo from '../assets/logo.png'
 
 const Navbar = () => {
   const { theme, toggleTheme, isDark } = useTheme();
@@ -55,12 +56,13 @@ const Navbar = () => {
     <nav className="sticky top-0 z-50 backdrop-blur-md transition-all duration-300 py-[1%]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-fit">
-
-          <Link to="/" className="flex items-center gap-2 text-text-primary">
-            <div className="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center">
-              <span className="text-text-primary font-bold">SG</span>
-            </div>
-          </Link>
+          <div className="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center cursor-pointer">
+            <img onClick={() => handleNavigation('/')}
+              src={logo}
+              alt="Logo"
+              className="h-6 object-contain"
+            />
+          </div>
 
           <div className="hidden md:flex items-center gap-1">
             <button onClick={() => handleNavigation('/')} className={linkClass}>
