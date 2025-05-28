@@ -1,7 +1,53 @@
-import React from 'react'
-import { ArrowRight, Github, Linkedin, Mail, Download, Code, Briefcase, User, MessageSquare } from 'lucide-react';
+import React, { useRef } from 'react'
+import gsap from 'gsap'
+import { useGSAP } from '@gsap/react'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
+gsap.registerPlugin(ScrollTrigger)
 const About = () => {
+
+  const abourPara = useRef();
+  const techStack = useRef();
+
+  useGSAP(() => {
+    gsap.fromTo(abourPara.current, {
+      opacity: 0,
+      x: 40,
+      stagger: 0.2
+    },
+      {
+        opacity: 1,
+        x: 0,
+        duration: 1,
+        ease: 'power2.out',
+        stagger: 0.2,
+        scrollTrigger: {
+          trigger: abourPara.current,
+          start: "top 85%",
+          toggleActions: "play reset play reset",
+        }
+      })
+  })
+  useGSAP(() => {
+    gsap.fromTo(techStack.current, {
+      opacity: 0,
+      x: -40,
+      stagger: 0.2
+    },
+      {
+        opacity: 1,
+        x: 0,
+        duration: 1,
+        ease: 'power2.out',
+        stagger: 0.2,
+        scrollTrigger: {
+          trigger: techStack.current,
+          start: "top 85%",
+          toggleActions: "play reset play reset",
+        }
+      })
+  })
+
   return (
     <div>
       <section id="about" className="py-20 px-4 sm:px-6 lg:px-8 bg-bg-secondary scroll-mt-[60px]">
@@ -14,7 +60,7 @@ const About = () => {
           </div>
 
           <div className="grid md:grid-cols-2 gap-12 items-center">
-            <div className='relative mx-auto p-5 rounded-3xl bg-bg-primary'>
+            <div ref={techStack} className='relative mx-auto p-5 rounded-3xl bg-bg-primary'>
               <div className="grid grid-cols-1 gap-4 mb-2">
                 <div className="bg-bg-card p-4 rounded-lg">
                   <h4 className="font-semibold text-text-primary mb-2">Programming Languages</h4>
@@ -30,7 +76,7 @@ const About = () => {
                   <h4 className="font-semibold text-text-primary mb-2">Libraries and Frameworks</h4>
                   <p className="text-text-secondary text-sm">React.js, Express.js, Tailwind CSS</p>
                 </div>
-              </div>             
+              </div>
               <div className="grid grid-cols-2 gap-4  mb-2">
                 <div className="bg-bg-card p-4 rounded-lg">
                   <h4 className="font-semibold text-text-primary mb-2">Databases</h4>
@@ -50,10 +96,11 @@ const About = () => {
               </div>
 
             </div>
-            <div className='relative mx-auto p-5 rounded-3xl bg-bg-surface'>
+
+            <div ref={abourPara} className='relative mx-auto p-5 rounded-3xl bg-bg-surface'>
               <h3 className="text-2xl font-bold text-text-primary mb-6">In A Nutshell...</h3>
               <p className="text-text-secondary mb-6">
-                When I’m not debugging code, I’m probably getting clean bowled by a syntax error, much like I do facing a googly on the cricket pitch. My code commits are as unpredictable as my vlogs—some are <i>cinematic masterpieces</i>, others... just raw footage of me yelling at the screen. And when the bugs get too loud, I let my piano take over—because sometimes, the only way to fix a broken feature is to play a sad tune in D minor and hope the compiler feels guilty. 
+                When I’m not debugging code, I’m probably getting clean bowled by a syntax error, much like I do facing a googly on the cricket pitch. My code commits are as unpredictable as my vlogs—some are <i>cinematic masterpieces</i>, others... just raw footage of me yelling at the screen. And when the bugs get too loud, I let my piano take over—because sometimes, the only way to fix a broken feature is to play a sad tune in D minor and hope the compiler feels guilty.
               </p>
               <p className="text-text-secondary mb-6">
                 Honestly, I spend more time talking to AI than actual people—am I proud? Not really. Will I stop? Absolutely not. But don’t worry, I can still write clean code without whispering to a robot every five minutes.
