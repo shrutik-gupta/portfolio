@@ -8,7 +8,7 @@ const NotFound = () => {
     <Navbar/>
     <div className="min-h-screen flex flex-col justify-center items-center text-center bg-bg-primary text-text-primary px-4">
       <h1 className="text-6xl font-bold mb-4">404</h1>
-      <p className="text-2xl mb-6">Oops! We don't have that page.</p>
+      <p className="text-2xl mb-6">Oops! I don't have that page at this moment.</p>
       <Link
         to="/"
         className="text-accent-primary hover:underline text-lg"
