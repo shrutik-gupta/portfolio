@@ -4,6 +4,17 @@ import { Moon, Sun, Settings, Home, Info, Briefcase, User, Mail, Menu, X, AppWin
 import { useTheme } from '../contexts/ThemeContext';
 import logo from '../assets/logo.png'
 
+const waitForElementAndScroll = (id) => {
+  const checkExist = setInterval(() => {
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+      clearInterval(checkExist);
+    }
+  }, 100);
+};
+
+
 const Navbar = () => {
   const { theme, toggleTheme, isDark } = useTheme();
   const location = useLocation();
@@ -31,13 +42,11 @@ const Navbar = () => {
       } else {
         navigate('/');
         setTimeout(() => {
-          const element = document.getElementById(sectionId);
-          if (element) {
-            element.scrollIntoView({ behavior: 'smooth' });
-          }
+          waitForElementAndScroll(sectionId);
         }, 100);
       }
-    } else {
+    }
+    else {
       navigate(path);
     }
   };
