@@ -19,7 +19,9 @@ const ContactMe = () => {
     setStatus('Sending...');
 
     try {
-      const res = await axios.post('http://localhost:3000/query/add', formData);
+      const BASE_URL = import.meta.env.VITE_BACKEND_URL;
+
+      const res = await axios.post(`${BASE_URL}/query/add`, formData);
       if (res.status === 201) {
         setStatus('Message sent successfully!');
         setFormData({ name: '', email: '', message: '' });
