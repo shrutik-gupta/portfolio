@@ -9,7 +9,6 @@ const CustomCursor = () => {
             gsap.to(mouseRef.current, {
                 x: e.x,
                 y: e.y,
-                duration: 0.3,
             });
         };
         document.addEventListener('mousemove', moveCursor);
