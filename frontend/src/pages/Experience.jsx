@@ -17,7 +17,7 @@ const Experience = () => {
 
           <div className="space-y-8">
             {experience.map((job, index) => (
-              <ExperienceCard {...job}/>
+              <ExperienceCard key={index} {...job}/>
             ))}
           </div>
         </div>
