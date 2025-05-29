@@ -23,7 +23,7 @@ const projects = {
     image: rakshak,
     name: "Rakshak : Community Safety App",
     description:
-      "Rakshak is a dual-portal web application designed to enhance public safety and streamline law enforcement operations. The citizen portal empowers users to report crimes easily, view local complaints, engage in community discussions, and receive safe route suggestions. Meanwhile, the officer portal provides tools for efficient complaint management, access to criminal databases, and real-time responses. Key features include an intuitive user interface, AI-powered image analysis, facial recognition for criminal identification, a dynamic complaint dashboard, and an integrated community forum—together fostering transparency, accountability, and proactive crime prevention.",
+      "Rakshak is a dual-portal web app that boosts public safety and streamlines law enforcement. Citizens can report crimes, view local complaints, join community forums, and get safe route suggestions. Officers get tools for complaint management, criminal database access, and real-time response. Features include AI-driven image analysis, facial recognition, a dynamic dashboard, and an intuitive UI—promoting transparency, accountability, and proactive crime prevention.",
     tech: ["React.js", "MongoDB", "Node.js", "Express.js"],
     link: "https://github.com/shrutik-gupta/Rakshak",
   },

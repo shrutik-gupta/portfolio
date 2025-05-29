@@ -25,7 +25,7 @@ const Projects = () => {
       if (numProjects === 0) return;
 
       const cardWidth = cards[0].offsetWidth;
-      const gap = 32; // Tailwind gap-8
+      const gap = 50;
       const totalWidth = cardWidth * numProjects + gap * (numProjects - 1);
       const viewportWidth = window.innerWidth;
 
@@ -42,24 +42,6 @@ const Projects = () => {
             pin: true,
             anticipatePin: 1,
             invalidateOnRefresh: true,
-            onUpdate: (self) => {
-              // update active dot
-              const progress = self.progress * numProjects;
-              const active = Math.min(numProjects - 1, Math.floor(progress));
-              projectArray.forEach((_, i) => {
-                const dot = document.getElementById(`project-indicator-${i}`);
-                if (dot) {
-                  dot.classList.toggle(
-                    'bg-accent-secondary',
-                    i === active
-                  );
-                  dot.classList.toggle(
-                    'bg-accent-primary/30',
-                    i !== active
-                  );
-                }
-              });
-            }
           }
         });
       }
@@ -81,9 +63,8 @@ const Projects = () => {
   return (
     <section
       id="projects"
-      className="relative w-full min-h-screen bg-bg-primary dark:bg-bg-primary-dark"
+      className="relative w-full min-h-screen bg-bg-primary dark:bg-bg-primary-dark mb-8"
     >
-      {/* Header */}
       <div className="text-center py-16 px-4">
         <h2 className="text-3xl sm:text-4xl font-bold text-text-primary mb-4">
           My Projects
@@ -93,7 +74,6 @@ const Projects = () => {
         </p>
       </div>
 
-      {/* Horizontal Scroll Container */}
       <div ref={containerRef} className="relative overflow-hidden">
         <div
           ref={trackRef}

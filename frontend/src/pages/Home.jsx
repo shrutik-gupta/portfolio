@@ -1,6 +1,4 @@
-// components/Home.js
 import React from 'react';
-import { ArrowRight, Github, Linkedin, Mail, Download, Code, Briefcase, User, MessageSquare, Contact } from 'lucide-react';
 import Hero from './Hero';
 import About from './About';
 import Projects from './Projects';
