@@ -30,7 +30,7 @@ const Experience = () => {
                 title: "Junior Developer",
                 company: "Startup Co.",
                 duration: "2019 - 2020",
-                description: "Built and maintained multiple client websites, learned modern development practices and agile methodologies."
+                description: "Built and main tained multiple client websites, learned modern development practices and agile methodologies."
               }
             ].map((job, index) => (
               <div key={index} className="bg-bg-card rounded-lg p-8 shadow-lg">

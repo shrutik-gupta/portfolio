@@ -12,7 +12,7 @@ const CustomCursor = () => {
             });
         };
         document.addEventListener('mousemove', moveCursor);
-        document.body.style.cursor = 'none'
+        // document.body.style.cursor = 'none'
     }, []);
     return (
         <div ref={mouseRef} className='h-5 w-5 bg-accent-primary rounded-full fixed -top-10 left-0 pointer-events-none z-50 transform translate-x-0 translate-y-0'>
