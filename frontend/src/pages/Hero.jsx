@@ -1,11 +1,11 @@
 import React from 'react';
 import { ArrowRight, Github, Linkedin, Mail, Download } from 'lucide-react';
 import profile from '../assets/profile.png';
-import process from 'process';
+// import process from 'process';
 import HeroParticle from '../components/HeroParticle';
-
+import resume from '../assets/resume.pdf'
 const Hero = () => {
-    const backendBaseUrl = process.env.REACT_APP_BACKEND_URL || 'http://localhost:3000';
+    // const backendBaseUrl = process.env.REACT_APP_BACKEND_URL || 'http://localhost:3000';
     return (
         <section id="hero" className="relative min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8">
             <div className="absolute inset-0 z-0">
@@ -40,7 +40,8 @@ const Hero = () => {
                         Get In Touch <ArrowRight className="w-4 h-4" />
                     </button>
                     <a
-                        href={`${backendBaseUrl}/uploads/resume.pdf`}
+                        href={resume}
+                        // href = {`${backendBaseUrl}/uploads/resume.pdf`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="border border-border-default text-text-primary px-8 py-3 rounded-lg font-semibold hover:bg-bg-hover transition-colors flex items-center gap-2"
