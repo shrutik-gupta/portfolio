@@ -1,17 +1,27 @@
-const express = require('express');
-const dotenv = require('dotenv');
-const cors = require('cors');
-const path = require('path');
+import express from 'express';
+import connectToDatabase from './db/db.js';
+import dotenv from 'dotenv';
+import cors from 'cors';
+import path from 'path';
+import contactRouter from './routes/contact.js'
+import { fileURLToPath } from 'url';
+
+// Fix for __dirname in ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 dotenv.config();
+connectToDatabase();
 
 const app = express();
 app.use(cors());
 app.use(express.json());
+
 app.use(express.static(path.join(__dirname, 'public')));
 
-const PORT = process.env.PORT;
+app.use('/query', contactRouter);
 
+const PORT = process.env.PORT;
 app.listen(PORT, () => {
   console.log(`Server running on ${process.env.BASE_URL}`);
 });
