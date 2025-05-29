@@ -8,12 +8,14 @@ import Experience from './pages/Experience';
 import ContactMe from './pages/ContactMe';
 import About from './pages/About';
 import NotFound from './pages/NotFound';
+import CustomCursor from './components/CustomCursor';
 
 function App() {
   return (
     <ThemeProvider>
+      <CustomCursor/>
       <Router>
-        <div className="min-h-screen bg-bg-primary text-text-primary transition-colors duration-300">
+        <div className="min-h-screen bg-bg-primary text-text-primary transition-colors duration-300">        
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/about" element={<About />} />
