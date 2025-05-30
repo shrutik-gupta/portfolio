@@ -150,7 +150,7 @@ export default function Parallel() {
                                 <p className="text-sm text-text-secondary mt-1 italic">
                                     Capturing moments, one clip at a time.
                                 </p>
-                                <a className="text-sm text-text-secondary mt-1 italic" href="https://youtu.be/LlimX_jKtSM?feature=shared">[watch full video]</a>
+                                <a className="text-sm text-text-secondary mt-1 italic" target='_blank' href="https://youtu.be/LlimX_jKtSM?feature=shared">[watch full video]</a>
                             </div>
                         )}
                     </div>
