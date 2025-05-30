@@ -5,6 +5,7 @@ import Projects from './Projects';
 import Experience from './Experience';
 import ContactMe from './ContactMe';
 import Navbar from '../components/Navbar';
+import Redirect from '../components/Redirect';
 
 const Home = () => {
   return (
@@ -15,6 +16,7 @@ const Home = () => {
       <Projects/>
       <Experience/>
       <ContactMe/>
+      <Redirect/>
     </div>
   );
 };

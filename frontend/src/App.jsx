@@ -10,6 +10,7 @@ import About from './pages/About';
 import NotFound from './pages/NotFound';
 import CustomCursor from './components/CustomCursor';
 import PreLoader from './pages/PreLoader';
+import Parallel from './pages/Parallel';
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -36,6 +37,7 @@ function App() {
               <Route path="/experience" element={<Experience />} />
               <Route path="/contact" element={<ContactMe />} />
               <Route path="/preferences" element={<Preference />} />
+              <Route path="/parallel" element={<Parallel />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </div>
