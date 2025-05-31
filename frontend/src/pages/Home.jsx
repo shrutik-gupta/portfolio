@@ -6,7 +6,7 @@ import Experience from './Experience';
 import ContactMe from './ContactMe';
 import Navbar from '../components/Navbar';
 import Redirect from '../components/Redirect';
-
+import Chat from '../components/Chat';
 const Home = () => {
   return (
     <div className="min-h-screen bg-bg-primary">
@@ -17,6 +17,7 @@ const Home = () => {
       <Experience/>
       <ContactMe/>
       <Redirect/>
+      <Chat/>
     </div>
   );
 };
