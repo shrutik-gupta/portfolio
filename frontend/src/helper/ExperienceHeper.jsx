@@ -1,15 +1,14 @@
-import logo from '../assets/logo.png'
-import nni from '../assets/exp-nni.png'
+// import nni from '../assets/exp-nni.png'
 import iete from '../assets/exp-iete.jpg'
 import nss from '../assets/exp-nss.png'
 const experience = [
-    {
-        title: "Web Developer Intern",
-        company: "NeuroNexus Innovations",
-        duration: "March 2025 - April 2025",
-        description: "During my internship, I worked with cross-functional teams to design and develop responsive web applications using the MERN stack. I contributed to real-world projects involving dynamic UI components, API integration, and performance optimization. This experience enhanced my technical skills and gave me a solid understanding of agile development, version control, and deploying scalable web solutions.",
-        logo: nni
-    },
+    // {
+    //     title: "Web Developer Intern",
+    //     company: "NeuroNexus Innovations",
+    //     duration: "March 2025 - April 2025",
+    //     description: "During my internship, I worked with cross-functional teams to design and develop responsive web applications using the MERN stack. I contributed to real-world projects involving dynamic UI components, API integration, and performance optimization. This experience enhanced my technical skills and gave me a solid understanding of agile development, version control, and deploying scalable web solutions.",
+    //     logo: nni
+    // },
     {
         title: "Student Volunteer",
         company: "National Service Scheme | TSEC",

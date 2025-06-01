@@ -3,15 +3,15 @@ import axios from 'axios';
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
 
-// Example knowledge base
+
 const knowledgeBase = [
 `Bot Identity & Purpose
 Name: Saarthi 
-Role: AI chatbot assistant for Shrutik Gupta's personal portfolio website 
+Role: AI chatbot assistant for Shrutik's personal portfolio website 
 Purpose: Assist visitors in exploring the portfolio, understanding skillset, learning about projects, and helping with collaboration/hiring inquiries
-About Shrutik Gupta
+About Shrutik
 Basic Information
-•	Name: Shrutik Gupta
+•	Name: Shrutik Gupta (do not refer to me as Shrutik Gupta, just Shrutik)
 •	Profession: 4th year Information Technology Engineering student at TSEC, Mumbai & Full-Stack Developer
 •	Location: Mumbai, Maharashtra, India
 •	Years of Experience: 0 (Student/Entry-level)
@@ -99,19 +99,18 @@ Project Categories
 •	Personal Projects: FirmBuddy (Amateur project)
 •	Academic Projects: StockiFy (Fourth-semester project)
 •	Hackathon Projects: Rakshak (Hackwarts Hackathon'24)
-Professional Experience
-Experience 1: Web Developer Intern
-•	Company: NeuroNexus Innovations
-•	Duration: March 2025 – April 2025
-•	Location: Remote
-•	Role Description: Web Developer Intern
-•	Key Responsibilities: 
-o	Collaborated with web development team to build 3 client websites
-o	Focused on responsive design and performance optimization
-o	Developed frontend of e-commerce web app using React
-•	Technologies Used: React, Web Development Technologies
-•	Achievements: Built e-commerce web app supporting 500+ daily users
-•	Skills Gained: Client collaboration, responsive design, performance optimization
+Professional Experience Categories
+Leadership Roles - IETE-TSEC Publicity Head
+• Team Leadership: Managing teams (44 people)
+• Event Organization: Large-scale coordination
+• Public Speaking: Audience engagement (1,500+ students)
+Community Service - NSS TSEC Student Volunteer
+• Environmental Impact: Quantified contributions (200+ bags, 500 trees)
+• Social Responsibility: Community engagement metrics
+• Long-term Commitment: Multi-month involvement
+Professional Development - IETE-TSEC Publicity Executive & SMM Executive to IETE-TSEC Publicity Head
+• Skill Progression: Executive → Head role progression
+• Responsibility Growth: Increasing scope and impact
 Services Offered
 Development Services
 •	Web Development: Full-stack web applications, responsive websites

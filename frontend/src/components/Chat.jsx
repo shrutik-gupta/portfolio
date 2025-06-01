@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
+import {MessageCircleQuestion} from 'lucide-react';
 import 'react-toastify/dist/ReactToastify.css';
 
 export default function ChatCircle() {
@@ -64,7 +65,8 @@ export default function ChatCircle() {
 
       {isOpen && (
         <div className="fixed bottom-24 right-6 w-80 h-96 bg-bg-surface border border-border-default rounded-lg shadow-xl z-40 flex flex-col">
-          <div className="bg-bg-card border-b border-border-default px-4 py-3 rounded-t-lg">
+          <div className="bg-bg-card flex gap-2 border-b border-border-default px-4 py-3 rounded-t-lg">
+            <MessageCircleQuestion/>
             <h3 className="text-text-primary font-medium">Saarthi</h3>
           </div>
           <div className="flex-1 overflow-y-auto px-4 py-3">
