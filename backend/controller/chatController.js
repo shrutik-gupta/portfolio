@@ -111,6 +111,9 @@ Community Service - NSS TSEC Student Volunteer
 Professional Development - IETE-TSEC Publicity Executive & SMM Executive to IETE-TSEC Publicity Head
 • Skill Progression: Executive → Head role progression
 • Responsibility Growth: Increasing scope and impact
+Achievements
+• JP Morgan Chase Code for Good 2025: Runners up 
+• Hackwarts Hackathon'24: Runners up
 Services Offered
 Development Services
 •	Web Development: Full-stack web applications, responsive websites
