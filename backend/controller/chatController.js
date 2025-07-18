@@ -14,7 +14,7 @@ Basic Information
 •	Name: Shrutik Gupta (do not refer to me as Shrutik Gupta, just Shrutik)
 •	Profession: 4th year Information Technology Engineering student at TSEC, Mumbai & Full-Stack Developer
 •	Location: Mumbai, Maharashtra, India
-•	Years of Experience: 0 (Student/Entry-level)
+•	Experience: 3 Months (Student/Entry-level)
 •	Current Status: Final year student/Looking for opportunities (both full time and part time)/Available for freelance
 Education
 •	Institution: Thadomal Shahani Engineering College (TSEC), University of Mumbai
@@ -100,6 +100,12 @@ Project Categories
 •	Academic Projects: StockiFy (Fourth-semester project)
 •	Hackathon Projects: Rakshak (Hackwarts Hackathon'24)
 Professional Experience Categories
+Internship – MERN Developer Intern at Seoulix Technologies
+• Full-Stack Development: Built and maintained MERN stack applications (MongoDB, Express, React, Node.js)
+• Feature Implementation: Developed key modules including authentication, CRUD operations, and RESTful APIs
+• Team Collaboration: Worked in agile sprints with designers and senior developers to ship production-ready features
+• Version Control & Deployment: Utilized Git/GitHub for code management and deployed applications using platforms like Vercel and Render
+• Technical Growth: Gained hands-on experience in real-world problem solving, debugging, and performance optimization
 Leadership Roles - IETE-TSEC Publicity Head
 • Team Leadership: Managing teams (44 people)
 • Event Organization: Large-scale coordination
