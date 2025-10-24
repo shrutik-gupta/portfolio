@@ -1,6 +1,6 @@
 import React from 'react';
 import { ArrowRight, Github, Linkedin, Mail, Download } from 'lucide-react';
-import profile from '../assets/profile.png';
+import profile from '../assets/profile.jpg';
 // import process from 'process';
 import HeroParticle from '../components/HeroParticle';
 import resume from '../assets/resume.pdf'
@@ -16,7 +16,7 @@ const Hero = () => {
                     <img
                         src={profile}
                         alt="Profile"
-                        className="w-32 h-32 rounded-full mx-auto mb-6 border-4 border-accent-primary"
+                        className="h-32 rounded-full mx-auto mb-6 border-4 border-accent-primary"
                     />
                     <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-text-primary mb-4">
                         Hi, I'm <span className="text-accent-primary">Shrutik Gupta</span>
