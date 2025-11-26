@@ -1,8 +1,8 @@
-import express from 'express';
-import { addQuery } from '../controller/contactController.js';
+const express = require('express');
+const { addQuery } = require('../controller/contactController');
 
 const router = express.Router();
 
 router.post('/add', addQuery);
 
-export default router;
+module.exports = router;

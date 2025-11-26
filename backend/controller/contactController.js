@@ -1,4 +1,4 @@
-import Contact from "../models/Contact.js";
+const Contact = require('../models/Contact');
 
 const addQuery = async (req,res)=>{
     try{
@@ -18,4 +18,4 @@ const addQuery = async (req,res)=>{
     }
 }
 
-export {addQuery};
+module.exports = { addQuery };

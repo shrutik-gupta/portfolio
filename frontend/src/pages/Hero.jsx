@@ -3,7 +3,6 @@ import { ArrowRight, Github, Linkedin, Mail, Download } from 'lucide-react';
 import profile from '../assets/profile.jpg';
 // import process from 'process';
 import HeroParticle from '../components/HeroParticle';
-import resume from '../assets/resume.pdf'
 const Hero = () => {
     const BASE_URL = import.meta.env.VITE_BACKEND_URL;
     return (
@@ -40,8 +39,7 @@ const Hero = () => {
                         Get In Touch <ArrowRight className="w-4 h-4" />
                     </button>
                     <a
-                        // href={resume}
-                        href = {`${BASE_URL}/uploads/resume.pdf`}
+                        href = '/resume.pdf'
                         target="_blank"
                         rel="noopener noreferrer"
                         className="border border-border-default text-text-primary px-8 py-3 rounded-lg font-semibold hover:bg-bg-hover transition-colors flex items-center gap-2"

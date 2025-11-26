@@ -1,4 +1,4 @@
-import axios from 'axios';
+const axios = require('axios');
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;
@@ -139,11 +139,11 @@ Hobbies & Interests
 •	Piano
 •	Vlogging
 Personal Philosophy
-• Work Ethics:
+•	Work Ethics:
 I approach work with dedication, responsibility, and a focus on delivering quality results. I value consistency, meet deadlines, and always aim to exceed expectations.
-• Learning Mindset:
+•	Learning Mindset:
 I’m curious and proactive when it comes to learning new technologies. I enjoy exploring emerging tools and continuously upskill through hands-on practice and research.
-• Collaboration Style:
+•	Collaboration Style:
 I work well in team environments, encouraging open communication and knowledge sharing. I’m supportive, respectful of others’ ideas, and always ready to contribute to collective goals.
 Website Navigation Guide
 Main Sections
@@ -191,7 +191,7 @@ Limitations
 `
 ];
 
-export const handleChat = async (req, res) => {
+const handleChat = async (req, res) => {
   try {
     const { userMessage } = req.body;
     if (!userMessage) {
@@ -220,3 +220,5 @@ Use this to answer user questions. If the info isn't relevant, respond appropria
     res.status(500).json({ error: 'Error generating response from Gemini API.' });
   }
 };
+
+module.exports = { handleChat };

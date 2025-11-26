@@ -27,7 +27,7 @@ export default function ChatCircle() {
     setInputText('');
 
     try {
-      const resp = await fetch(`${BASE_URL}/api/chat`, {
+      const resp = await fetch(`${BASE_URL}/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userMessage: trimmed })
