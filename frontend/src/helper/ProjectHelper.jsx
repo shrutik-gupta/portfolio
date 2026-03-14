@@ -2,15 +2,25 @@ import portfolio from '../assets/project-portfolio.png'
 import ems from '../assets/project-ems.png'
 import rakshak from '../assets/project-rakshak.png'
 import ims from '../assets/project-ims.png'
+import gewodo from '../assets/project-gewodo.png'
+
 const projects = {
   project1: {
-    image: portfolio,
-    name: "Personal Portfolio",
+    image: gewodo,
+    name: "GeWoDo - AI-Powered Home Services Marketplace",
     description:
-      "This portfolio is a modern and responsive web application built to showcase my skills, experience, and projects. Designed with a clean UI and smooth animations, it highlights my work as a developer through an engaging and interactive experience. The site features sections like About, Projects, Experience, and Contact, and is optimized for performance across all devices.",
-    tech: ["React.js", "Tailwind CSS", "tsParticle", "GSAP", "MongoDB", "Node.js", "Express.js"],
-    link: "https://github.com/shrutik-gupta/portfolio",
+      "Gewodo is an agentic service marketplace designed to revolutionize worker-client interactions through automated negotiation. Beyond the marketplace, the app includes an AI-driven training & certification module that generates practical assessments and learning paths based on worker performance. The application delivers a seamless experience for both service seekers & providers.",
+    tech: ["JWT Auth", "LLM Orchestration (REST API)","React.js", "MongoDB", "Node.js", "Express.js"],
+    link: "https://gewodo.vercel.app",
   },
+  // project1: {
+  //   image: portfolio,
+  //   name: "Personal Portfolio",
+  //   description:
+  //     "This portfolio is a modern and responsive web application built to showcase my skills, experience, and projects. Designed with a clean UI and smooth animations, it highlights my work as a developer through an engaging and interactive experience. The site features sections like About, Projects, Experience, and Contact, and is optimized for performance across all devices.",
+  //   tech: ["React.js", "Tailwind CSS", "tsParticle", "GSAP", "MongoDB", "Node.js", "Express.js"],
+  //   link: "https://github.com/shrutik-gupta/portfolio",
+  // },
   project2: {
     image: ims,
     name: "StockiFy : Inventory Management System",

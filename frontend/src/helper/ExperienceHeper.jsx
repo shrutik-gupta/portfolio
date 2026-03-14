@@ -5,7 +5,7 @@ const experience = [
     {
         title: "MERN Developer Intern",
         company: "Seoulix Technologies",
-        duration: "July 2025 - Present",
+        duration: "July 2025 - October 2025",
         description: "During my internship, I worked with cross-functional teams to design and develop responsive web applications using the MERN stack. I contributed to real-world projects involving dynamic UI components, API integration, and performance optimization. This experience enhanced my technical skills and gave me a solid understanding of agile development, version control, and deploying scalable web solutions.",
         logo: seoulix
     },

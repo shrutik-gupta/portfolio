@@ -30,7 +30,7 @@ const ProjectCard = ({ image, name, description, tech, link }) => (
           className="text-accent-primary hover:text-accent-secondary transition-colors flex items-center gap-1"
         >
           <Code className="w-4 h-4" />
-          Code
+          Go to project
         </a>
       </div>
     </div>
