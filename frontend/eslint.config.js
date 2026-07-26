@@ -23,7 +23,13 @@ export default [
     rules: {
       ...js.configs.recommended.rules,
       ...reactHooks.configs.recommended.rules,
-      'no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z_]' }],
+      // Uppercase names are components: JSX usage is invisible to this
+      // rule without eslint-plugin-react, so polymorphic `as: Tag` props
+      // would otherwise read as unused.
+      'no-unused-vars': [
+        'error',
+        { varsIgnorePattern: '^[A-Z_]', argsIgnorePattern: '^[A-Z_]' },
+      ],
       'react-refresh/only-export-components': [
         'warn',
         { allowConstantExport: true },

@@ -1,93 +1,200 @@
-import React, { useRef, useEffect } from "react";
-import ProjectCard from "../components/ProjectCard";
-import projects from "../helper/ProjectHelper";
-
-import gsap from "gsap";
+import React, { useRef, useState } from 'react';
 import { useGSAP } from '@gsap/react';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { gsap, ScrollTrigger, prefersReducedMotion, clamp } from '../lib/motion';
+import ProjectCard from '../components/ProjectCard';
+import projects from '../helper/ProjectHelper';
 
-gsap.registerPlugin(ScrollTrigger);
-
+/**
+ * Selected work as a pinned horizontal scrubber.
+ *
+ * Vertical scroll is remapped to horizontal travel, and each panel is
+ * transformed in 3D by its distance from the centre of the viewport, so
+ * the panel being read is square-on while its neighbours turn away and
+ * recede.
+ *
+ * Panel centres are measured once per ScrollTrigger refresh rather than
+ * per frame: reading getBoundingClientRect inside the scrub loop would
+ * force a layout on every frame, right after GSAP has written new
+ * transforms — the classic cause of jank in this pattern.
+ */
 const Projects = () => {
-  const projectArray = Object.values(projects);
-  const containerRef = useRef();
-  const trackRef = useRef();
+  const root = useRef(null);
+  const viewportRef = useRef(null);
+  const trackRef = useRef(null);
+  const railRef = useRef(null);
+  const [active, setActive] = useState(0);
 
-  useGSAP(() => {
-    const container = containerRef.current;
-    const track = trackRef.current;
+  useGSAP(
+    () => {
+      const section = root.current;
+      const track = trackRef.current;
+      if (!section || !track) return undefined;
 
-    if (!container || !track) return;
+      gsap.set('[data-anim]', { visibility: 'visible' });
 
-    const setupAnimation = () => {
-      const cards = track.children;
-      const numProjects = cards.length;
-      if (numProjects === 0) return;
+      if (prefersReducedMotion()) return undefined;
 
-      const cardWidth = cards[0].offsetWidth;
-      const gap = 50;
-      const totalWidth = cardWidth * numProjects + gap * (numProjects - 1);
-      const viewportWidth = window.innerWidth;
+      const panels = gsap.utils.toArray('[data-panel]', track);
+      const images = panels.map((p) => p.querySelector('[data-project-image]'));
 
-      if (totalWidth > viewportWidth) {
-        const scrollDistance = totalWidth - viewportWidth;
-        gsap.to(track, {
-          x: -scrollDistance,
-          ease: "none",
-          scrollTrigger: {
-            trigger: container,
-            start: `top 20%`, 
-            end: `top -150%`,
-            scrub: 1,
-            pin: true,
-            anticipatePin: 1,
-            invalidateOnRefresh: true,
+      const setters = panels.map((panel) => ({
+        rotY: gsap.quickSetter(panel, 'rotationY', 'deg'),
+        scale: gsap.quickSetter(panel, 'scale'),
+        z: gsap.quickSetter(panel, 'z', 'px'),
+        alpha: gsap.quickSetter(panel, 'opacity'),
+      }));
+      const imageSetters = images.map((img) =>
+        img ? gsap.quickSetter(img, 'x', 'px') : null,
+      );
+      // The rail is written directly rather than held in state — a
+      // setState per scroll frame would re-render the whole section.
+      const setRail = gsap.quickSetter(railRef.current, 'scaleX');
+
+      let centers = [];
+      const measure = () => {
+        centers = panels.map((p) => p.offsetLeft + p.offsetWidth / 2);
+      };
+      measure();
+
+      const distance = () =>
+        Math.max(0, track.scrollWidth - viewportRef.current.offsetWidth);
+
+      const applyDepth = (self) => {
+        const x = Number(gsap.getProperty(track, 'x')) || 0;
+        const mid = viewportRef.current.offsetWidth / 2;
+
+        let nearest = 0;
+        let nearestDist = Infinity;
+
+        for (let i = 0; i < panels.length; i += 1) {
+          const offset = centers[i] + x - mid;
+          const ratio = clamp(offset / viewportRef.current.offsetWidth, -1.5, 1.5);
+          const abs = Math.min(Math.abs(ratio), 1);
+
+          setters[i].rotY(ratio * -16);
+          setters[i].scale(1 - abs * 0.13);
+          setters[i].z(-abs * 260);
+          setters[i].alpha(1 - abs * 0.55);
+          imageSetters[i]?.(ratio * 42);
+
+          if (Math.abs(offset) < nearestDist) {
+            nearestDist = Math.abs(offset);
+            nearest = i;
           }
-        });
-      }
-    };
+        }
 
-    const timer = setTimeout(setupAnimation, 100);
-    return () => {
-      clearTimeout(timer);
-      ScrollTrigger.getAll().forEach(t => t.kill());
-    };
-  }, [projectArray.length]);
+        setActive((prev) => (prev === nearest ? prev : nearest));
+        setRail(self ? self.progress : 0);
+      };
 
-  useEffect(() => {
-    const onResize = () => ScrollTrigger.refresh();
-    window.addEventListener('resize', onResize);
-    return () => window.removeEventListener('resize', onResize);
-  }, []);
+      const tween = gsap.to(track, {
+        x: () => -distance(),
+        ease: 'none',
+        scrollTrigger: {
+          trigger: section,
+          start: 'top top',
+          // 1:1 mapping between pixels scrolled and pixels travelled —
+          // any other ratio makes the horizontal motion feel detached
+          // from the wheel.
+          end: () => `+=${distance()}`,
+          pin: true,
+          anticipatePin: 1,
+          scrub: 0.8,
+          invalidateOnRefresh: true,
+          onRefresh: () => {
+            measure();
+            applyDepth(null);
+          },
+          onUpdate: applyDepth,
+        },
+      });
+
+      // Heading reveal, independent of the scrub.
+      gsap.from('[data-work-head] > *', {
+        yPercent: 100,
+        autoAlpha: 0,
+        duration: 1,
+        stagger: 0.08,
+        ease: 'sweep',
+        scrollTrigger: { trigger: section, start: 'top 70%', once: true },
+      });
+
+      applyDepth(null);
+
+      return () => {
+        tween.scrollTrigger?.kill();
+        tween.kill();
+      };
+    },
+    { scope: root },
+  );
 
   return (
     <section
       id="projects"
-      className="relative w-full min-h-screen bg-bg-primary dark:bg-bg-primary-dark mb-8"
+      ref={root}
+      className="relative w-full overflow-hidden bg-bg-secondary"
     >
-      <div className="text-center py-16 px-4">
-        <h2 className="text-3xl sm:text-4xl font-bold text-text-primary mb-4">
-          My Projects
-        </h2>
-        <p className="text-text-secondary text-lg max-w-2xl mx-auto">
-          Here are some of the projects I’ve worked on recently
-        </p>
-      </div>
-
-      <div ref={containerRef} className="relative overflow-hidden">
-        <div
-          ref={trackRef}
-          className="flex gap-8 px-3"
-        >
-          {projectArray.map((proj, idx) => (
-            <div
-              key={idx}
-              className="flex-shrink-0"
-              style={{ width: '95vw' }}
-            >
-              <ProjectCard {...proj} />
+      <div className="flex h-[100svh] flex-col justify-center py-[max(2rem,5vh)]">
+        {/* Header */}
+        <div className="flex items-end justify-between gap-6 px-gutter pb-[max(1.5rem,4vh)]">
+          <div data-work-head className="flex flex-col gap-3">
+            <div className="line-mask">
+              <p data-anim className="eyebrow">
+                <span className="text-accent-primary">03</span> Selected work
+              </p>
             </div>
-          ))}
+            <div className="line-mask">
+              <h2 data-anim className="text-fluid-5 text-text-primary">
+                Things I&apos;ve{' '}
+                <span className="serif-italic text-accent-primary">shipped</span>
+              </h2>
+            </div>
+          </div>
+
+          <div className="hidden shrink-0 items-baseline gap-3 sm:flex">
+            <span className="text-fluid-2 tabular-nums text-text-primary">
+              {String(active + 1).padStart(2, '0')}
+            </span>
+            <span className="text-fluid--2 text-text-muted">
+              / {String(projects.length).padStart(2, '0')}
+            </span>
+          </div>
+        </div>
+
+        {/* Horizontal viewport */}
+        <div
+          ref={viewportRef}
+          className="relative w-full flex-1 overflow-hidden"
+          style={{ perspective: '1600px' }}
+        >
+          <div
+            ref={trackRef}
+            className="flex h-full items-center gap-[6vw] pl-gutter pr-[30vw] will-change-transform"
+            style={{ transformStyle: 'preserve-3d' }}
+          >
+            {projects.map((project, i) => (
+              <div
+                key={project.id}
+                data-panel
+                className="h-full w-[86vw] shrink-0 will-change-transform lg:w-[74vw]"
+                style={{ transformStyle: 'preserve-3d' }}
+              >
+                <ProjectCard project={project} index={i} total={projects.length} />
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Progress rail */}
+        <div className="mt-[max(1.5rem,4vh)] px-gutter">
+          <div className="h-px w-full bg-border-default">
+            <div
+              ref={railRef}
+              className="h-full origin-left bg-accent-primary"
+              style={{ transform: 'scaleX(0)' }}
+            />
+          </div>
         </div>
       </div>
     </section>

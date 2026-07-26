@@ -1,15 +1,25 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
-import {MessageCircleQuestion} from 'lucide-react';
+import { MessageCircleQuestion, X, ArrowUp } from 'lucide-react';
 import 'react-toastify/dist/ReactToastify.css';
+import Magnetic from './Magnetic';
 
+/**
+ * Saarthi — a small assistant that answers questions about Shrutik.
+ * Presentation only has been reworked; the request flow is unchanged.
+ */
 export default function ChatCircle() {
   const BASE_URL = import.meta.env.VITE_BACKEND_URL;
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([
-    { author: 'assistant', content: "Hey! I’m Saarthi, the personal chat assistant for Shrutik. What would you like to know?" }
+    {
+      author: 'assistant',
+      content:
+        "Hey! I’m Saarthi, the personal chat assistant for Shrutik. What would you like to know?",
+    },
   ]);
   const [inputText, setInputText] = useState('');
+  const [pending, setPending] = useState(false);
   const scrollRef = useRef(null);
 
   useEffect(() => {
@@ -21,16 +31,17 @@ export default function ChatCircle() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const trimmed = inputText.trim();
-    if (!trimmed) return;
+    if (!trimmed || pending) return;
 
     setMessages((prev) => [...prev, { author: 'user', content: trimmed }]);
     setInputText('');
+    setPending(true);
 
     try {
       const resp = await fetch(`${BASE_URL}/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userMessage: trimmed })
+        body: JSON.stringify({ userMessage: trimmed }),
       });
       const data = await resp.json();
       if (!resp.ok || data.error) {
@@ -40,78 +51,99 @@ export default function ChatCircle() {
     } catch (err) {
       console.error('Chat API error:', err);
       toast.error('Error contacting server. Please try again.');
+    } finally {
+      setPending(false);
     }
   };
 
   return (
     <>
-      <div className="fixed bottom-6 right-6 z-50">
-        <button
-          onClick={() => setIsOpen(!isOpen)}
-          className="w-14 h-14 bg-accent-primary hover:bg-accent-primary-hover text-text-inverse rounded-full shadow-lg flex items-center justify-center transition-all duration-200 transform hover:scale-105"
-          aria-label="Open chat"
-        >
-          {isOpen ? (
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          ) : (
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-            </svg>
-          )}
-        </button>
+      <div className="fixed bottom-6 right-6 z-[75]">
+        <Magnetic strength={0.45}>
+          <button
+            type="button"
+            onClick={() => setIsOpen((v) => !v)}
+            data-cursor="link"
+            data-cursor-label={isOpen ? 'Close' : 'Ask'}
+            aria-label={isOpen ? 'Close chat' : 'Open chat'}
+            className="flex h-14 w-14 items-center justify-center rounded-full border border-border-hover bg-bg-card/80 text-text-primary backdrop-blur-md transition-colors duration-500 hover:border-accent-primary hover:text-accent-primary"
+          >
+            <span data-magnetic-inner className="flex">
+              {isOpen ? (
+                <X className="h-5 w-5" />
+              ) : (
+                <MessageCircleQuestion className="h-5 w-5" />
+              )}
+            </span>
+          </button>
+        </Magnetic>
       </div>
 
       {isOpen && (
-        <div className="fixed bottom-24 right-6 w-80 h-96 bg-bg-surface border border-border-default rounded-lg shadow-xl z-40 flex flex-col">
-          <div className="bg-bg-card flex gap-2 border-b border-border-default px-4 py-3 rounded-t-lg">
-            <MessageCircleQuestion/>
-            <h3 className="text-text-primary font-medium">Saarthi</h3>
+        <div className="fixed bottom-24 right-6 z-[74] flex h-[26rem] w-[min(21rem,calc(100vw-3rem))] flex-col border border-border-hover bg-bg-card/95 shadow-lift backdrop-blur-xl">
+          <div className="flex items-center justify-between border-b border-border-default px-5 py-4">
+            <span className="text-fluid--2 uppercase tracking-[0.24em] text-text-secondary">
+              Saarthi
+            </span>
+            <span className="flex items-center gap-2 text-fluid--2 uppercase tracking-[0.2em] text-text-muted">
+              <span className="h-1.5 w-1.5 rounded-full bg-success" />
+              Online
+            </span>
           </div>
-          <div className="flex-1 overflow-y-auto px-4 py-3">
-            <div className="space-y-3">
+
+          <div className="flex-1 overflow-y-auto px-5 py-4">
+            <div className="flex flex-col gap-4">
               {messages.map((msg, idx) => (
                 <div
                   key={idx}
                   className={`flex ${msg.author === 'user' ? 'justify-end' : 'justify-start'}`}
                 >
-                  <div
-                    className={`rounded-lg p-2 max-w-[85%] text-sm
-                      ${msg.author === 'user'
+                  <p
+                    className={`max-w-[85%] px-3 py-2 text-fluid--1 leading-relaxed ${
+                      msg.author === 'user'
                         ? 'bg-accent-primary text-text-inverse'
-                        : 'bg-bg-card text-text-primary'}`
-                    }
+                        : 'border border-border-default text-text-secondary'
+                    }`}
                   >
-                    <p>{msg.content}</p>
-                  </div>
+                    {msg.content}
+                  </p>
                 </div>
               ))}
+              {pending && (
+                <p className="text-fluid--2 uppercase tracking-[0.2em] text-text-muted">
+                  Thinking…
+                </p>
+              )}
               <div ref={scrollRef} />
             </div>
           </div>
+
           <form
             onSubmit={handleSubmit}
-            className="border-t border-border-default px-3 py-3 flex items-center bg-bg-card rounded-b-lg"
+            className="flex items-center gap-3 border-t border-border-default px-5 py-4"
           >
             <input
               type="text"
-              className="flex-1 px-3 py-2 mr-2 border border-border-default rounded-lg bg-bg-surface text-text-primary text-sm focus:outline-none focus:ring-2 focus:ring-border-focus transition"
-              placeholder="Type your message..."
+              className="field py-2 text-fluid--1"
+              placeholder="Ask something…"
               value={inputText}
               onChange={(e) => setInputText(e.target.value)}
+              aria-label="Message"
             />
             <button
               type="submit"
-              className="px-3 py-2 bg-accent-primary text-text-inverse rounded-lg hover:bg-accent-primary-hover transition text-sm"
+              disabled={pending}
+              data-cursor="link"
+              aria-label="Send message"
+              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-border-default text-text-secondary transition-colors duration-500 hover:border-accent-primary hover:text-accent-primary disabled:opacity-50"
             >
-              Send
+              <ArrowUp className="h-4 w-4" />
             </button>
           </form>
         </div>
       )}
 
-      <ToastContainer position="bottom-right" autoClose={3000} />
+      <ToastContainer position="bottom-right" autoClose={3000} theme="dark" />
     </>
   );
 }

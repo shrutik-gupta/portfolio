@@ -1,50 +1,79 @@
-import portfolio from '../assets/project-portfolio.png'
-import ems from '../assets/project-ems.png'
-import rakshak from '../assets/project-rakshak.png'
-import ims from '../assets/project-ims.png'
-import gewodo from '../assets/project-gewodo.png'
+import portfolio from '../assets/project-portfolio.png';
+import ems from '../assets/project-ems.png';
+import rakshak from '../assets/project-rakshak.png';
+import ims from '../assets/project-ims.png';
+import gewodo from '../assets/project-gewodo.png';
 
-const projects = {
-  project1: {
+/**
+ * Ordered for the horizontal scrubber — the first entry is the anchor
+ * case study, so it carries the strongest imagery and the longest read.
+ */
+const projects = [
+  {
+    id: 'gewodo',
     image: gewodo,
-    name: "GeWoDo - AI-Powered Home Services Marketplace",
+    name: 'GeWoDo',
+    subtitle: 'AI-Powered Home Services Marketplace',
+    year: '2025',
+    role: 'Full-stack · Agent orchestration',
     description:
-      "Gewodo is an agentic service marketplace designed to revolutionize worker-client interactions through automated negotiation. Beyond the marketplace, the app includes an AI-driven training & certification module that generates practical assessments and learning paths based on worker performance. The application delivers a seamless experience for both service seekers & providers.",
-    tech: ["JWT Auth", "LLM Orchestration (REST API)","React.js", "MongoDB", "Node.js", "Express.js"],
-    link: "https://gewodo.vercel.app",
+      'An agentic service marketplace that automates negotiation between workers and clients. Beyond the marketplace, an AI-driven training and certification module generates practical assessments and learning paths from worker performance.',
+    tech: ['React.js', 'Node.js', 'Express.js', 'MongoDB', 'JWT Auth', 'LLM Orchestration'],
+    link: 'https://gewodo.vercel.app',
+    linkLabel: 'Live site',
   },
-  // project1: {
-  //   image: portfolio,
-  //   name: "Personal Portfolio",
-  //   description:
-  //     "This portfolio is a modern and responsive web application built to showcase my skills, experience, and projects. Designed with a clean UI and smooth animations, it highlights my work as a developer through an engaging and interactive experience. The site features sections like About, Projects, Experience, and Contact, and is optimized for performance across all devices.",
-  //   tech: ["React.js", "Tailwind CSS", "tsParticle", "GSAP", "MongoDB", "Node.js", "Express.js"],
-  //   link: "https://github.com/shrutik-gupta/portfolio",
-  // },
-  project2: {
-    image: ims,
-    name: "StockiFy : Inventory Management System",
-    description:
-      "StockiFy, a Python-based inventory management system, streamlines inventory management for businesses of all sizes. Its intuitive interface and powerful features simplify inventory, employee, and sales tracking, optimizing operational efficiency.",
-    tech: ["Python", "MySQL"],
-    link: "https://github.com/shrutik-gupta/StockiFy--Inventory-Management-System",
-  },
-  project3: {
+  {
+    id: 'rakshak',
     image: rakshak,
-    name: "Rakshak : Community Safety App",
+    name: 'Rakshak',
+    subtitle: 'Community Safety Platform',
+    year: '2024',
+    role: 'Full-stack · Dual-portal system',
     description:
-      "Rakshak is a dual-portal web app that boosts public safety and streamlines law enforcement. Citizens can report crimes, view local complaints, join community forums, and get safe route suggestions. Officers get tools for complaint management, criminal database access, and real-time response. Features include AI-driven image analysis, facial recognition, a dynamic dashboard, and an intuitive UI—promoting transparency, accountability, and proactive crime prevention.",
-    tech: ["React.js", "MongoDB", "Node.js", "Express.js"],
-    link: "https://github.com/shrutik-gupta/Rakshak",
+      'A dual-portal web app for public safety. Citizens report crimes, follow local complaints, join community forums and get safer route suggestions; officers get complaint management, database access and real-time response — with AI image analysis and facial recognition behind it.',
+    tech: ['React.js', 'Node.js', 'Express.js', 'MongoDB'],
+    link: 'https://github.com/shrutik-gupta/Rakshak',
+    linkLabel: 'Source',
   },
-  project4: {
+  {
+    id: 'stockify',
+    image: ims,
+    name: 'StockiFy',
+    subtitle: 'Inventory Management System',
+    year: '2024',
+    role: 'Application · Data modelling',
+    description:
+      'A Python inventory system for businesses of any size. One interface for stock, employees and sales tracking, built around a relational schema that keeps reporting fast as the catalogue grows.',
+    tech: ['Python', 'MySQL'],
+    link: 'https://github.com/shrutik-gupta/StockiFy--Inventory-Management-System',
+    linkLabel: 'Source',
+  },
+  {
+    id: 'firmbuddy',
     image: ems,
-    name: "FirmBuddy : Exmployee Management System",
+    name: 'FirmBuddy',
+    subtitle: 'Employee Management System',
+    year: '2024',
+    role: 'Full-stack · Admin tooling',
     description:
-      "FirmBuddy is a minimalistic Emplooyee Management System designed to help organization keep track of their workforce. It provide a clean and intuitive interface for admin to manage their emplooyees (salaries, departments, leaves). This README file provides an overview of the project, its features, installation instructions, and usage.",
-    tech: ["React.js", "MongoDB", "Node.js", "Express.js"],
-    link: "https://github.com/shrutik-gupta/FirmBuddy---Employee-Management-System",
+      'A deliberately minimal employee management system: salaries, departments and leave in one clean admin surface, designed so an operator can learn the whole tool in a single sitting.',
+    tech: ['React.js', 'Node.js', 'Express.js', 'MongoDB'],
+    link: 'https://github.com/shrutik-gupta/FirmBuddy---Employee-Management-System',
+    linkLabel: 'Source',
   },
-};
+  {
+    id: 'portfolio',
+    image: portfolio,
+    name: 'This Portfolio',
+    subtitle: 'WebGL + Scroll Experience',
+    year: '2026',
+    role: 'Design · Creative engineering',
+    description:
+      'A hand-built portfolio running a single render loop: Lenis momentum scrolling driven by GSAP’s ticker, ScrollTrigger for pinned and scrubbed sequences, and instanced GLSL fields for the ambient 3D layers.',
+    tech: ['React.js', 'Three.js', 'GSAP', 'Lenis', 'Tailwind CSS'],
+    link: 'https://github.com/shrutik-gupta/portfolio',
+    linkLabel: 'Source',
+  },
+];
 
 export default projects;

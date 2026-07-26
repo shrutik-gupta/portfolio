@@ -1,56 +1,45 @@
-import React, { useRef } from 'react';
-import gsap from 'gsap';
-import { useGSAP } from '@gsap/react';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import React from 'react';
 
-gsap.registerPlugin(ScrollTrigger);
-
-const ExperienceCard = ({ title, company, duration, description, logo }) => {
-  const cardRef = useRef();
-
-  useGSAP(() => {
-    gsap.fromTo(cardRef.current,
-      {
-        opacity: 0,
-        x: -40,
-      },
-      {
-        opacity: 1,
-        x: 0,
-        duration: 1,
-        ease: 'power2.out',
-        scrollTrigger: {
-          trigger: cardRef.current,
-          start: "top 85%",
-          toggleActions: "play none none reset",
-        }
-      }
-    );
-  }, []);
+/**
+ * One row of the experience ledger.
+ *
+ * Hover state is reported upward rather than handled locally, because a
+ * single shared preview plate follows the cursor across all rows —
+ * mounting one plate per row would mean N elements tracking the pointer.
+ */
+const ExperienceCard = ({ item, index, onHover, onLeave }) => {
+  const { title, company, duration, description } = item;
 
   return (
-    <div 
-      ref={cardRef}
-      className="bg-bg-card rounded-2xl shadow-xl p-6 sm:p-8 transition-all duration-300 hover:shadow-2xl hover:scale-[1.01]"
+    <li
+      data-exp-row
+      className="group relative border-t border-border-default"
+      onPointerEnter={() => onHover?.(index)}
+      onPointerLeave={() => onLeave?.()}
     >
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-4">
-        <div className="flex items-center gap-4">
-          {logo && (
-            <img
-              src={logo}
-              alt={`${company} logo`}
-              className="w-10 h-10 object-contain rounded-lg"
-            />
-          )}
-          <div>
-            <p className="text-accent-primary font-semibold text-lg">{company}</p>
-            <h3 className="text-xl font-bold text-text-primary">{title}</h3>
-          </div>
+      {/* Wash that wipes in from the left on hover. */}
+      <span
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 origin-left scale-x-0 bg-bg-hover/50 transition-transform duration-700 ease-out-expo group-hover:scale-x-100"
+      />
+
+      <div className="relative grid gap-4 py-8 md:grid-cols-[auto_1fr_1.1fr] md:items-baseline md:gap-10 md:py-10">
+        <span className="text-fluid--2 uppercase tracking-[0.22em] text-text-muted md:w-[16ch]">
+          {duration}
+        </span>
+
+        <div className="flex flex-col gap-1">
+          <h3 className="text-fluid-2 text-text-primary transition-transform duration-700 ease-out-expo md:group-hover:translate-x-2">
+            {company}
+          </h3>
+          <p className="text-fluid--1 text-accent-primary">{title}</p>
         </div>
-        <span className="text-sm text-text-secondary font-medium sm:text-right">{duration}</span>
+
+        <p className="measure text-fluid--1 leading-relaxed text-text-secondary">
+          {description}
+        </p>
       </div>
-      <p className="text-text-secondary leading-relaxed text-[0.95rem]">{description}</p>
-    </div>
+    </li>
   );
 };
 

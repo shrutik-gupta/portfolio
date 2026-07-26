@@ -20,25 +20,27 @@ export default function Parallel() {
     const handleVlogReveal = () => setShowVlog(true); 
 
     return (
-        <div className="min-h-screen bg-bg-secondary text-text-primary">
+        <div className="min-h-screen bg-bg-primary text-text-primary">
             <Navbar />
-            <div className="container mx-auto px-4 py-8">
-                <div className="max-w-2xl mx-auto space-y-6">
-                    <div className="text-start space-y-2">
-                        <p className="text-lg font-semibold italic text-accent-primary">So you made it here...</p>
-                        <p className="text-base font-medium">Ready to learn something off-the-record?</p>
+            <div className="px-gutter pb-24 pt-32">
+                <div className="max-w-3xl mx-auto space-y-10">
+                    <div className="text-start space-y-4">
+                        <p className="eyebrow">Off the record</p>
+                        <p className="serif-italic text-fluid-4 text-accent-primary">So you made it here...</p>
+                        <p className="text-fluid-0 text-text-secondary">Ready to learn something that isn’t on the résumé?</p>
                     </div>
 
-                    <div className="space-y-4 border-b border-gray-300 pb-8">
+                    <div className="space-y-4 border-b border-border-default pb-10">
                         <div className="flex items-center space-x-2">
-                            <span className="text-base">I play cricket</span>
-                            <span className="text-base italic text-accent-primary font-semibold">very well.</span>
+                            <span className="text-fluid-1 text-text-primary">I play cricket</span>
+                            <span className="serif-italic text-fluid-1 text-accent-primary">very well.</span>
                         </div>
 
                         {cricketStep === 0 && (
                             <button
                                 onClick={handleCricketReveal}
-                                className="px-4 py-2 bg-accent-primary text-white rounded-lg shadow hover:bg-opacity-90 transition text-sm"
+                                data-cursor="link"
+                                className="rounded-full border border-accent-primary px-6 py-3 text-fluid--2 uppercase tracking-[0.2em] text-accent-primary transition-colors duration-500 ease-out-expo hover:bg-accent-primary hover:text-text-inverse"
                             >
                                 Click to reveal
                             </button>
@@ -53,10 +55,10 @@ export default function Parallel() {
                                             autoPlay
                                             muted
                                             onEnded={handleCricketFirstEnd}
-                                            className="sm:max-h-80 object-cover rounded-lg shadow"
+                                            className="sm:max-h-80 object-cover "
                                         />
                                         {cricketStep === 1 && (
-                                            <p className="text-sm text-text-secondary mt-1">Oh no no.. not this</p>
+                                            <p className="mt-3 text-fluid--2 uppercase tracking-[0.2em] text-text-muted">Oh no no.. not this</p>
                                         )}
                                     </div>
                                     {cricketStep === 2 && (
@@ -66,9 +68,9 @@ export default function Parallel() {
                                                 autoPlay
                                                 muted
                                                 loop
-                                                className="sm:max-h-80 object-cover rounded-lg shadow"
+                                                className="sm:max-h-80 object-cover "
                                             />
-                                            <p className="text-sm text-text-secondary mt-1">Yeah this is how I play</p>
+                                            <p className="mt-3 text-fluid--2 uppercase tracking-[0.2em] text-text-muted">Yeah this is how I play</p>
                                         </div>
                                     )}
                                 </div>
@@ -76,16 +78,17 @@ export default function Parallel() {
                         )}
                     </div>
 
-                    <div className="space-y-4 border-b border-gray-300 pb-8">
+                    <div className="space-y-4 border-b border-border-default pb-10">
                         <div className="flex items-center space-x-2">
-                            <span className="text-base italic text-accent-primary font-semibold">Sometimes,</span>
-                            <span className="text-base">I also play piano</span>
+                            <span className="serif-italic text-fluid-1 text-accent-primary">Sometimes,</span>
+                            <span className="text-fluid-1 text-text-primary">I also play piano</span>
                         </div>
 
                         {pianoStep === 0 && (
                             <button
                                 onClick={handlePianoReveal}
-                                className="px-4 py-2 bg-accent-primary text-white rounded-lg shadow hover:bg-opacity-90 transition text-sm"
+                                data-cursor="link"
+                                className="rounded-full border border-accent-primary px-6 py-3 text-fluid--2 uppercase tracking-[0.2em] text-accent-primary transition-colors duration-500 ease-out-expo hover:bg-accent-primary hover:text-text-inverse"
                             >
                                 Click to listen
                             </button>
@@ -100,10 +103,10 @@ export default function Parallel() {
                                             autoPlay
                                             controls
                                             onEnded={handlePianoFirstEnd}
-                                            className="sm:max-h-80 object-cover rounded-lg shadow"
+                                            className="sm:max-h-80 object-cover "
                                         />
                                         {pianoStep === 1 && (
-                                            <p className="text-sm text-text-secondary mt-1">Like this</p>
+                                            <p className="mt-3 text-fluid--2 uppercase tracking-[0.2em] text-text-muted">Like this</p>
                                         )}
                                     </div>
                                     {pianoStep === 2 && (
@@ -112,9 +115,9 @@ export default function Parallel() {
                                                 src={piano1}
                                                 autoPlay
                                                 controls
-                                                className="sm:max-h-80 object-cover rounded-lg shadow"
+                                                className="sm:max-h-80 object-cover "
                                             />
-                                            <p className="text-sm text-text-secondary mt-1">
+                                            <p className="mt-3 text-fluid--2 uppercase tracking-[0.2em] text-text-muted">
                                                 But things don’t go well all the time
                                             </p>
                                         </div>
@@ -126,14 +129,15 @@ export default function Parallel() {
 
                     <div className="space-y-4">
                         <div className="flex items-center space-x-2">
-                            <span className="text-base">Oh, and sometimes I</span>
-                            <span className="text-base italic text-accent-primary font-semibold">vlog.</span>
+                            <span className="text-fluid-1 text-text-primary">Oh, and sometimes I</span>
+                            <span className="serif-italic text-fluid-1 text-accent-primary">vlog.</span>
                         </div>
 
                         {!showVlog && (
                             <button
                                 onClick={handleVlogReveal}
-                                className="px-4 py-2 bg-accent-primary text-white rounded-lg shadow hover:bg-opacity-90 transition text-sm"
+                                data-cursor="link"
+                                className="rounded-full border border-accent-primary px-6 py-3 text-fluid--2 uppercase tracking-[0.2em] text-accent-primary transition-colors duration-500 ease-out-expo hover:bg-accent-primary hover:text-text-inverse"
                             >
                                 Click to watch
                             </button>
@@ -145,12 +149,12 @@ export default function Parallel() {
                                     src={vlog}
                                     autoPlay
                                     loop
-                                    className="w-full max-h-80 object-cover rounded-lg shadow"
+                                    className="w-full max-h-80 object-cover "
                                 />
-                                <p className="text-sm text-text-secondary mt-1 italic">
+                                <p className="mt-3 text-fluid--1 serif-italic text-text-secondary">
                                     Capturing moments, one clip at a time.
                                 </p>
-                                <a className="text-sm text-text-secondary mt-1 italic" target='_blank' href="https://youtu.be/LlimX_jKtSM?feature=shared">[watch full video]</a>
+                                <a className="mt-3 text-fluid--1 serif-italic text-text-secondary" target='_blank' href="https://youtu.be/LlimX_jKtSM?feature=shared">[watch full video]</a>
                             </div>
                         )}
                     </div>

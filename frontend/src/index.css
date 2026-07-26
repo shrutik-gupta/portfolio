@@ -1,107 +1,343 @@
-@import url('https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-body{
-   font-family: "Raleway", sans-serif;
-   overflow-x: hidden;
-}
+/* ============================================================
+   1. COLOR SYSTEM
+   Dark is the primary canvas: obsidian, graphite, bone.
+   Light is a secondary "paper" state, not a mirror image.
+   ============================================================ */
 
-:root {
-  /* Backgrounds */
-  --color-bg-primary: 250 247 243;    /* Off-white ivory */
-  --color-bg-secondary: 244 240 234;  /* Pale almond */
-  --color-bg-tertiary: 238 233 225;   /* Warm linen */
-  --color-bg-card: 255 255 255;       /* Clean white */
-  --color-bg-surface: 250 247 243;    /* Ivory */
-  --color-bg-hover: 244 240 234;      /* Almond */
-
-  /* Text */
-  --color-text-primary: 51 49 47;     /* Charcoal gray */
-  --color-text-secondary: 107 101 99; /* Slate gray */
-  --color-text-muted: 156 150 147;    /* Soft gray */
-  --color-text-inverse: 255 255 255;  /* White */
-
-  /* Borders */
-  --color-border-default: 226 221 217; /* Light taupe */
-  --color-border-hover: 210 205 200;   /* Medium taupe */
-  --color-border-focus: 203 93 93;     /* Warm coral */
-
-  /* Accents */
-  --color-accent-primary: 203 93 93;   /* Coral */
-  --color-accent-secondary: 123 182 169; /* Seafoam teal */
-  --color-accent-primary-hover: 186 85 85;  /* Deep coral */
-  --color-accent-secondary-hover: 105 156 142; /* Deep teal */
-
-  /* Status */
-  --color-success: 106 170 100;    /* Soft green */
-  --color-warning: 214 135 65;     /* Warm amber */
-  --color-error: 192 75 75;        /* Dusty red */
-
-  /* Shadows */
-  --color-shadow-light: 0 0 0 / 0.05;
-  --color-shadow-medium: 0 0 0 / 0.15;
-}
-
-/* ————————————————————————————  
-   Dark mode: muted charcoal + warmed accents  
-———————————————————————————— */
+/* Dark — the flagship. Declared on :root so first paint is dark
+   even before ThemeContext hydrates (no white flash). */
+:root,
 .dark {
-  /* Backgrounds */
-  --color-bg-primary: 33 31 30;     /* Rich charcoal */
-  --color-bg-secondary: 43 40 38;   /* Dark slate */
-  --color-bg-tertiary: 53 49 46;    /* Deep taupe */
-  --color-bg-card: 43 40 38;        /* Slate */
-  --color-bg-surface: 53 49 46;     /* Taupe */
-  --color-bg-hover: 63 58 54;       /* Dark linen */
+  --color-bg-primary: 10 10 12;      /* Obsidian */
+  --color-bg-secondary: 15 15 18;    /* Pitch slate */
+  --color-bg-tertiary: 21 21 25;     /* Graphite */
+  --color-bg-card: 19 19 23;         /* Raised graphite */
+  --color-bg-surface: 26 26 31;      /* Surface slate */
+  --color-bg-hover: 34 34 40;        /* Lifted slate */
 
-  /* Text */
-  --color-text-primary: 242 239 235;  /* Ivory white */
-  --color-text-secondary: 206 201 196;/* Warm gray */
-  --color-text-muted: 156 150 147;    /* Soft gray */
-  --color-text-inverse: 33 31 30;     /* Charcoal */
+  --color-text-primary: 237 234 227;   /* Bone */
+  --color-text-secondary: 150 146 138; /* Ash */
+  --color-text-muted: 99 96 90;        /* Smoke */
+  --color-text-inverse: 10 10 12;      /* Obsidian */
 
-  /* Borders */
-  --color-border-default: 63 58 54;   /* Deep linen */
-  --color-border-hover: 82 76 71;     /* Dark taupe */
-  --color-border-focus: 203 93 93;    /* Coral */
+  --color-border-default: 33 33 38;
+  --color-border-hover: 56 56 64;
+  --color-border-focus: 201 150 94;
 
-  /* Accents */
-  --color-accent-primary: 203 93 93;   /* Coral */
-  --color-accent-secondary: 123 182 169; /* Seafoam teal */
-  --color-accent-primary-hover: 186 85 85;  /* Deep coral */
-  --color-accent-secondary-hover: 105 156 142; /* Deep teal */
+  --color-accent-primary: 201 150 94;        /* Burnished brass */
+  --color-accent-secondary: 138 148 158;     /* Cold slate */
+  --color-accent-primary-hover: 224 176 118;
+  --color-accent-secondary-hover: 176 186 196;
 
-  /* Status */
-  --color-success: 106 170 100;    /* Soft green */
-  --color-warning: 214 135 65;     /* Warm amber */
-  --color-error: 192 75 75;        /* Dusty red */
+  --color-success: 122 158 118;
+  --color-warning: 201 150 94;
+  --color-error: 186 92 82;
 
-  /* Shadows */
-  --color-shadow-light: 0 0 0 / 0.2;
-  --color-shadow-medium: 0 0 0 / 0.4;
+  --color-shadow-light: 0 0 0 / 0.4;
+  --color-shadow-medium: 0 0 0 / 0.6;
+
+  /* Ambient light used by canvases + CSS glows */
+  --ambient-warm: 201 150 94;
+  --ambient-cool: 74 88 108;
+  --grain-opacity: 0.045;
+
+  color-scheme: dark;
 }
 
-/* ————————————————————————————  
-   Gradient helpers  
-———————————————————————————— */
+/* Light — warm paper, high contrast ink. */
+.light {
+  --color-bg-primary: 240 237 231;
+  --color-bg-secondary: 232 228 220;
+  --color-bg-tertiary: 223 218 208;
+  --color-bg-card: 250 248 244;
+  --color-bg-surface: 236 232 225;
+  --color-bg-hover: 226 221 212;
+
+  --color-text-primary: 22 21 20;
+  --color-text-secondary: 86 82 76;
+  --color-text-muted: 138 133 124;
+  --color-text-inverse: 247 245 241;
+
+  --color-border-default: 214 208 197;
+  --color-border-hover: 186 178 164;
+  --color-border-focus: 148 101 42;
+
+  --color-accent-primary: 148 101 42;
+  --color-accent-secondary: 90 100 112;
+  --color-accent-primary-hover: 120 81 32;
+  --color-accent-secondary-hover: 66 76 88;
+
+  --color-success: 78 118 74;
+  --color-warning: 158 110 42;
+  --color-error: 158 62 54;
+
+  --color-shadow-light: 40 34 26 / 0.06;
+  --color-shadow-medium: 40 34 26 / 0.14;
+
+  --ambient-warm: 148 101 42;
+  --ambient-cool: 150 160 172;
+  --grain-opacity: 0.03;
+
+  color-scheme: light;
+}
+
+/* ============================================================
+   2. TYPE + SPACE SCALE  (fluid, viewport-derived)
+   ============================================================ */
 :root {
-  --gradient-accent: linear-gradient(135deg, 
-      rgb(var(--color-accent-primary)) 0%, 
-      rgb(var(--color-accent-secondary)) 100%);
+  --step--2: clamp(0.69rem, 0.66rem + 0.16vw, 0.78rem);
+  --step--1: clamp(0.83rem, 0.78rem + 0.24vw, 0.98rem);
+  --step-0:  clamp(1rem, 0.93rem + 0.35vw, 1.22rem);
+  --step-1:  clamp(1.2rem, 1.09rem + 0.55vw, 1.53rem);
+  --step-2:  clamp(1.44rem, 1.27rem + 0.85vw, 1.91rem);
+  --step-3:  clamp(1.73rem, 1.47rem + 1.28vw, 2.39rem);
+  --step-4:  clamp(2.07rem, 1.7rem + 1.87vw, 2.99rem);
+  --step-5:  clamp(2.49rem, 1.95rem + 2.68vw, 3.73rem);
+  --step-6:  clamp(2.99rem, 2.23rem + 3.79vw, 4.67rem);
+  --step-7:  clamp(3.58rem, 2.53rem + 5.28vw, 5.83rem);
+  --step-8:  clamp(4.3rem, 2.83rem + 7.33vw, 7.29rem);
 
-  --gradient-bg-light: linear-gradient(135deg, 
-      rgb(var(--color-bg-primary)) 0%, 
-      rgb(var(--color-bg-secondary)) 50%, 
-      rgb(var(--color-bg-tertiary)) 100%);
+  --gutter: clamp(1.25rem, 4vw, 5rem);
+  --measure: 62ch;
 
-  --gradient-bg-dark: linear-gradient(135deg, 
-      rgb(var(--color-bg-primary)) 0%, 
-      rgb(var(--color-bg-secondary)) 50%, 
-      rgb(var(--color-bg-tertiary)) 100%);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out-quart: cubic-bezier(0.76, 0, 0.24, 1);
 }
 
-#hero {
-    contain: paint;
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    scroll-behavior: auto; /* Lenis owns scrolling */
+  }
+
+  body {
+    font-family: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
+    font-size: var(--step-0);
+    line-height: 1.6;
+    background-color: rgb(var(--color-bg-primary));
+    color: rgb(var(--color-text-primary));
+    overflow-x: clip;
+  }
+
+  h1, h2, h3, h4 {
+    font-weight: 500;
+    line-height: 0.95;
+    letter-spacing: -0.035em;
+    text-wrap: balance;
+  }
+
+  p { text-wrap: pretty; }
+
+  ::selection {
+    background: rgb(var(--color-accent-primary));
+    color: rgb(var(--color-text-inverse));
+  }
+
+  /* Focus rings stay visible for keyboard users only. */
+  :focus-visible {
+    outline: 1px solid rgb(var(--color-accent-primary));
+    outline-offset: 3px;
+  }
+
+  /* Native cursor is replaced only where a real pointer exists. */
+  @media (pointer: fine) {
+    html.has-custom-cursor,
+    html.has-custom-cursor * {
+      cursor: none !important;
+    }
+  }
+
+  ::-webkit-scrollbar { width: 9px; }
+  ::-webkit-scrollbar-track { background: rgb(var(--color-bg-primary)); }
+  ::-webkit-scrollbar-thumb {
+    background: rgb(var(--color-border-hover));
+    border-radius: 99px;
+    border: 3px solid rgb(var(--color-bg-primary));
+  }
+  ::-webkit-scrollbar-thumb:hover { background: rgb(var(--color-accent-primary) / 0.7); }
+}
+
+/* ============================================================
+   3. COMPONENT PRIMITIVES
+   ============================================================ */
+@layer components {
+  /* --- Editorial shell --- */
+  .shell {
+    width: 100%;
+    max-width: 96rem;
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+  }
+
+  /* --- Section eyebrow: index + label, hairline rule --- */
+  .eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    font-size: var(--step--2);
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: rgb(var(--color-text-muted));
+    font-weight: 500;
+  }
+  .eyebrow::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(
+      to right,
+      rgb(var(--color-border-hover)),
+      transparent
+    );
+  }
+
+  /* --- Display type --- */
+  .display {
+    font-size: var(--step-7);
+    font-weight: 500;
+    letter-spacing: -0.045em;
+    line-height: 0.9;
+  }
+  .serif {
+    font-family: 'Instrument Serif', ui-serif, Georgia, serif;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+  }
+  .serif-italic {
+    font-family: 'Instrument Serif', ui-serif, Georgia, serif;
+    font-style: italic;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+  }
+
+  /* Outline / stroked type for depth layering */
+  .outline-type {
+    color: transparent;
+    -webkit-text-stroke: 1px rgb(var(--color-text-primary) / 0.35);
+  }
+
+  /* --- Line masking: parent clips, child slides --- */
+  .line-mask {
+    display: block;
+    overflow: hidden;
+    padding-bottom: 0.12em;
+    margin-bottom: -0.12em;
+  }
+
+  /* --- Hairline rule --- */
+  .rule {
+    height: 1px;
+    width: 100%;
+    background: rgb(var(--color-border-default));
+  }
+
+  /* --- Link with sweeping underline --- */
+  .link-sweep {
+    position: relative;
+    display: inline-block;
+  }
+  .link-sweep::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -0.12em;
+    height: 1px;
+    width: 100%;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.55s var(--ease-out-expo);
+  }
+  .link-sweep:hover::after {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+
+  /* --- Field (form input) --- */
+  .field {
+    width: 100%;
+    background: transparent;
+    border: 0;
+    border-bottom: 1px solid rgb(var(--color-border-default));
+    padding: 0.9rem 0;
+    color: rgb(var(--color-text-primary));
+    font-size: var(--step-0);
+    transition: border-color 0.4s var(--ease-out-expo);
+  }
+  .field::placeholder { color: rgb(var(--color-text-muted)); }
+  .field:focus {
+    outline: none;
+    border-bottom-color: rgb(var(--color-accent-primary));
+  }
+
+  /* --- Film grain: one fixed layer over the whole document --- */
+  .grain {
+    position: fixed;
+    inset: -50%;
+    z-index: 90;
+    pointer-events: none;
+    opacity: var(--grain-opacity);
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
+    will-change: transform;
+    animation: grain-shift 6s steps(6) infinite;
+  }
+
+  /* --- Vignette to seat the canvas layers in space --- */
+  .vignette {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(
+      120% 90% at 50% 30%,
+      transparent 35%,
+      rgb(var(--color-bg-primary) / 0.65) 100%
+    );
+  }
+}
+
+@keyframes grain-shift {
+  0%   { transform: translate(0, 0); }
+  20%  { transform: translate(-4%, 3%); }
+  40%  { transform: translate(3%, -5%); }
+  60%  { transform: translate(-2%, 4%); }
+  80%  { transform: translate(4%, 2%); }
+  100% { transform: translate(0, 0); }
+}
+
+/* ============================================================
+   4. UTILITIES
+   ============================================================ */
+@layer utilities {
+  .fill-parent { position: absolute; inset: 0; }
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .measure { max-width: var(--measure); }
+}
+
+/* Elements animated in by GSAP start hidden — avoids a flash of
+   final state before the timeline is built. */
+[data-anim] { visibility: hidden; }
+
+/* ============================================================
+   5. REDUCED MOTION
+   Every scroll/canvas system checks this in JS too; this is the
+   CSS-side backstop.
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: smooth; }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .grain { animation: none; }
+  [data-anim] { visibility: visible !important; }
 }
