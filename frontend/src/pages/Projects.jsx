@@ -16,6 +16,9 @@ import projects from '../helper/ProjectHelper';
  * per frame: reading getBoundingClientRect inside the scrub loop would
  * force a layout on every frame, right after GSAP has written new
  * transforms — the classic cause of jank in this pattern.
+ *
+ * The pin runs slightly longer than the horizontal travel so the last
+ * panel is held square-on before the section releases.
  */
 const Projects = () => {
   const root = useRef(null);
@@ -51,13 +54,26 @@ const Projects = () => {
       const setRail = gsap.quickSetter(railRef.current, 'scaleX');
 
       let centers = [];
+      let travel = 0;
+      let hold = 0;
+      let split = 1;
+
       const measure = () => {
+        const viewport = viewportRef.current.offsetWidth;
         centers = panels.map((p) => p.offsetLeft + p.offsetWidth / 2);
+        // Travel until the LAST panel sits dead centre. Deriving this from
+        // track.scrollWidth instead only brings the track's right edge to
+        // the viewport's, which leaves the final panel short of centre by
+        // whatever right-hand padding the track carries — so it never goes
+        // square-on before the pin releases.
+        travel = Math.max(0, centers[centers.length - 1] - viewport / 2);
+        // Scroll budget past the end of the travel, so the final panel is
+        // held square-on for a beat rather than unpinning the instant it
+        // arrives.
+        hold = window.innerHeight * 0.45;
+        split = travel > 0 ? travel / (travel + hold) : 1;
       };
       measure();
-
-      const distance = () =>
-        Math.max(0, track.scrollWidth - viewportRef.current.offsetWidth);
 
       const applyDepth = (self) => {
         const x = Number(gsap.getProperty(track, 'x')) || 0;
@@ -84,27 +100,34 @@ const Projects = () => {
         }
 
         setActive((prev) => (prev === nearest ? prev : nearest));
-        setRail(self ? self.progress : 0);
+        // The rail tracks the panels, not the pin, so it reads full once the
+        // last panel has landed rather than during the hold.
+        setRail(self ? Math.min(1, self.progress / split) : 0);
       };
 
       const tween = gsap.to(track, {
-        x: () => -distance(),
-        ease: 'none',
+        x: () => -travel,
+        // Progress is remapped so the travel completes at `split` and the
+        // remainder of the pin holds the last panel in place. Combined with
+        // the end distance below this keeps a 1:1 mapping between pixels
+        // scrolled and pixels travelled — any other ratio makes the
+        // horizontal motion feel detached from the wheel.
+        ease: (p) => (p < split ? p / split : 1),
         scrollTrigger: {
           trigger: section,
           start: 'top top',
-          // 1:1 mapping between pixels scrolled and pixels travelled —
-          // any other ratio makes the horizontal motion feel detached
-          // from the wheel.
-          end: () => `+=${distance()}`,
+          // Measured here rather than in onRefresh: ScrollTrigger resolves
+          // end before onRefresh fires, so measuring later would size the
+          // pin from the previous layout after a resize.
+          end: () => {
+            measure();
+            return `+=${travel + hold}`;
+          },
           pin: true,
           anticipatePin: 1,
           scrub: 0.8,
           invalidateOnRefresh: true,
-          onRefresh: () => {
-            measure();
-            applyDepth(null);
-          },
+          onRefresh: () => applyDepth(null),
           onUpdate: applyDepth,
         },
       });
@@ -170,7 +193,7 @@ const Projects = () => {
         >
           <div
             ref={trackRef}
-            className="flex h-full items-center gap-[6vw] pl-gutter pr-[30vw] will-change-transform"
+            className="flex h-full items-center gap-[6vw] px-gutter will-change-transform"
             style={{ transformStyle: 'preserve-3d' }}
           >
             {projects.map((project, i) => (
