@@ -4,7 +4,8 @@ import { ArrowUpRight } from 'lucide-react';
 import { useGSAP } from '@gsap/react';
 import { gsap, prefersReducedMotion } from '../lib/motion';
 import KineticText from '../components/KineticText';
-import profile from '../assets/profile.jpg';
+// import profile from '../assets/profile.jpg';
+import profile from '../assets/profile.png';
 
 const FACTS = [
   { k: 'Based in', v: 'Mumbai, India' },
@@ -133,7 +134,7 @@ const About = () => {
                 alt="Shrutik Gupta"
                 loading="lazy"
                 decoding="async"
-                className="aspect-[4/5] w-full scale-110 object-cover object-center grayscale transition-[filter] duration-700 ease-out-expo hover:grayscale-0"
+                className="aspect-[4/5] w-full scale-110 object-cover object-top origin-top grayscale transition-[filter] duration-700 ease-out-expo hover:grayscale-0"
               />
               <div
                 className="pointer-events-none absolute inset-0"
