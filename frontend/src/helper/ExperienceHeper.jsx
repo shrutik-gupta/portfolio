@@ -1,20 +1,21 @@
 import seoulix from '../assets/exp-seoulix.png'
 import iete from '../assets/exp-iete.jpg'
 import nss from '../assets/exp-nss.png'
+import ocd from '../assets/exp-ocd.png'
 const experience = [
+    {
+        title: "Junior Software Developer",
+        company: "One Click Designer",
+        duration: "May 2026 - Present",
+        description: "Developed scalable Node.js and Express APIs on AWS Lambda backed by DynamoDB. Architected automated text and media template engines (S3 → SQS → Render engine) supporting 5,000+ templates and thousands of live renders. Implemented robust security measures across 25+ endpoints with per-route rate limiting and admin verification middleware, alongside building real-time analytics dashboards for tracking system performance and user conversion funnels.",
+        logo: ocd
+    },
     {
         title: "MERN Developer Intern",
         company: "Seoulix Technologies",
         duration: "July 2025 - October 2025",
         description: "During my internship, I worked with cross-functional teams to design and develop responsive web applications using the MERN stack. I contributed to real-world projects involving dynamic UI components, API integration, and performance optimization. This experience enhanced my technical skills and gave me a solid understanding of agile development, version control, and deploying scalable web solutions.",
         logo: seoulix
-    },
-    {
-        title: "Student Volunteer",
-        company: "National Service Scheme | TSEC",
-        duration: "July 2024 - March 2025",
-        description: "As a student volunteer with NSS TSEC, I actively contributed to social and environmental initiatives like beach clean-ups, tree plantation drives, and rural outreach programs. I helped organize educational visits to Neral, teaching underprivileged children and supporting youth development. This experience allowed me to make a positive impact while growing as a socially responsible individual.",
-        logo: nss
     },
     {
         title: "Publicity Head",

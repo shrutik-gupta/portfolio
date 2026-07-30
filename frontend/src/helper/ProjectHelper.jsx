@@ -1,14 +1,26 @@
 import portfolio from '../assets/project-portfolio.png';
-import ems from '../assets/project-ems.png';
 import rakshak from '../assets/project-rakshak.png';
-import ims from '../assets/project-ims.png';
 import gewodo from '../assets/project-gewodo.png';
+import mindqueue from '../assets/project-mindqueue.png';
 
 /**
  * Ordered for the horizontal scrubber — the first entry is the anchor
  * case study, so it carries the strongest imagery and the longest read.
  */
 const projects = [
+  {
+    id: 'mindqueue',
+    image: mindqueue,
+    name: 'MindQueue',
+    subtitle: 'Multi-Agent AI Research System',
+    year: '2026',
+    role: 'AI Engineering · System Architecture',
+    description:
+      'A 4-agent AI system (Search, Reader, Writer, Critic) built to automate end-to-end research workflows, processing real-time web sources to generate structured reports with high content coherence.',
+    tech: ['Python', 'LangChain', 'Tavily API', 'BeautifulSoup', 'Streamlit', 'MistralAI'],
+    link: 'https://mindqueue.streamlit.app/',
+    linkLabel: 'Live site',
+  },
   {
     id: 'gewodo',
     image: gewodo,
@@ -33,32 +45,6 @@ const projects = [
       'A dual-portal web app for public safety. Citizens report crimes, follow local complaints, join community forums and get safer route suggestions; officers get complaint management, database access and real-time response — with AI image analysis and facial recognition behind it.',
     tech: ['React.js', 'Node.js', 'Express.js', 'MongoDB'],
     link: 'https://github.com/shrutik-gupta/Rakshak',
-    linkLabel: 'Source',
-  },
-  {
-    id: 'stockify',
-    image: ims,
-    name: 'StockiFy',
-    subtitle: 'Inventory Management System',
-    year: '2024',
-    role: 'Application · Data modelling',
-    description:
-      'A Python inventory system for businesses of any size. One interface for stock, employees and sales tracking, built around a relational schema that keeps reporting fast as the catalogue grows.',
-    tech: ['Python', 'MySQL'],
-    link: 'https://github.com/shrutik-gupta/StockiFy--Inventory-Management-System',
-    linkLabel: 'Source',
-  },
-  {
-    id: 'firmbuddy',
-    image: ems,
-    name: 'FirmBuddy',
-    subtitle: 'Employee Management System',
-    year: '2024',
-    role: 'Full-stack · Admin tooling',
-    description:
-      'A deliberately minimal employee management system: salaries, departments and leave in one clean admin surface, designed so an operator can learn the whole tool in a single sitting.',
-    tech: ['React.js', 'Node.js', 'Express.js', 'MongoDB'],
-    link: 'https://github.com/shrutik-gupta/FirmBuddy---Employee-Management-System',
     linkLabel: 'Source',
   },
   {
