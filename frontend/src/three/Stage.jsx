@@ -3,7 +3,7 @@ import { Canvas } from '@react-three/fiber';
 import { PerformanceMonitor } from '@react-three/drei';
 import { deviceTier, prefersReducedMotion } from '../lib/motion';
 
-const DPR_CEILING = { high: 1.75, mid: 1.35, low: 1 };
+const DPR_CEILING = { high: 2, mid: 1.5, low: 1.25 };
 
 /**
  * Shared WebGL surface.
@@ -14,20 +14,21 @@ const DPR_CEILING = { high: 1.75, mid: 1.35, low: 1 };
  *     frame budget slips;
  *   - the render loop is suspended whenever the canvas leaves the
  *     viewport or the tab is hidden, so an off-screen scene costs zero;
- *   - the context is released on unmount rather than lingering until GC
- *     (browsers cap simultaneous WebGL contexts, and a leaked one from a
- *     route change is enough to blank out the next scene).
+ *   - the context is released on unmount rather than lingering until GC.
  *
- * Scenes are decorative, so the canvas never takes pointer events —
- * cursor input is read from the shared frame state instead.
+ * Scenes are small, self-contained objects that sit beside the content,
+ * never behind it. A scene only receives pointer events when it asks for
+ * them with `interactive`; vertical touch scrolling always passes through.
  */
 const Stage = ({
   children,
   className = '',
   camera = { position: [0, 0, 5], fov: 42 },
-  alpha = true,
+  /** Let the scene handle hover/click on its objects. */
+  interactive = false,
   /** Skip WebGL entirely on low-capability devices. */
   requireTier = 'low',
+  /** Shown instead of the canvas when WebGL is skipped (reduced motion). */
   fallback = null,
   ...canvasProps
 }) => {
@@ -54,7 +55,7 @@ const Stage = ({
 
     const io = new IntersectionObserver(
       ([entry]) => setVisible(entry.isIntersecting),
-      { rootMargin: '15% 0px' },
+      { rootMargin: '10% 0px' },
     );
     io.observe(el);
 
@@ -77,26 +78,26 @@ const Stage = ({
         frameloop={running ? 'always' : 'never'}
         dpr={dpr}
         camera={camera}
+        flat
         gl={{
-          alpha,
-          antialias: false, // shader-side smoothing is cheaper than MSAA
+          alpha: true,
+          antialias: true,
           powerPreference: 'high-performance',
           stencil: false,
           depth: true,
           preserveDrawingBuffer: false,
         }}
-        style={{ pointerEvents: 'none' }}
-        onCreated={({ gl }) => {
-          gl.setClearAlpha(alpha ? 0 : 1);
+        style={{
+          pointerEvents: interactive ? 'auto' : 'none',
+          touchAction: 'pan-y',
         }}
+        onCreated={({ gl }) => gl.setClearAlpha(0)}
         {...canvasProps}
       >
         <PerformanceMonitor
-          bounds={() => [50, 60]}
-          onDecline={() => setDpr((d) => Math.max(0.75, d - 0.25))}
-          onIncline={() =>
-            setDpr((d) => Math.min(DPR_CEILING[tier], d + 0.25))
-          }
+          bounds={() => [45, 60]}
+          onDecline={() => setDpr((d) => Math.max(1, d - 0.25))}
+          onIncline={() => setDpr((d) => Math.min(DPR_CEILING[tier], d + 0.25))}
         />
         <Suspense fallback={null}>{children}</Suspense>
       </Canvas>

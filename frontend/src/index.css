@@ -3,109 +3,150 @@
 @tailwind utilities;
 
 /* ============================================================
-   1. COLOR SYSTEM
-   Dark is the primary canvas: obsidian, graphite, bone.
-   Light is a secondary "paper" state, not a mirror image.
+   1. COLOUR SYSTEM
+   One identity, two rooms.
+
+   After dark — a wine-black desk. Paper objects (prints, the
+   postcard, the ticket) stay cream and look lit from above.
+   Daylight — warm paper, black ink, and the same three inks:
+   vermilion, blue, butter.
+
+   Values are space-separated RGB so Tailwind can apply alpha.
    ============================================================ */
 
-/* Dark — the flagship. Declared on :root so first paint is dark
-   even before ThemeContext hydrates (no white flash). */
+/* After dark. Declared on :root too, so first paint is right
+   even before ThemeContext hydrates. */
 :root,
 .dark {
-  --color-bg-primary: 10 10 12;      /* Obsidian */
-  --color-bg-secondary: 15 15 18;    /* Pitch slate */
-  --color-bg-tertiary: 21 21 25;     /* Graphite */
-  --color-bg-card: 19 19 23;         /* Raised graphite */
-  --color-bg-surface: 26 26 31;      /* Surface slate */
-  --color-bg-hover: 34 34 40;        /* Lifted slate */
+  /* Grounds */
+  --color-bg-primary: 24 12 15;       /* wine-black desk */
+  --color-bg-secondary: 34 17 21;     /* raised wine */
+  --color-bg-tertiary: 46 24 29;
+  --color-bg-card: 52 28 33;          /* dark panels */
+  --color-bg-surface: 41 21 26;
+  --color-bg-hover: 60 32 38;
 
-  --color-text-primary: 237 234 227;   /* Bone */
-  --color-text-secondary: 150 146 138; /* Ash */
-  --color-text-muted: 99 96 90;        /* Smoke */
-  --color-text-inverse: 10 10 12;      /* Obsidian */
+  /* Ink */
+  --color-text-primary: 243 233 214;   /* cream */
+  --color-text-secondary: 207 189 173;
+  --color-text-muted: 163 141 129;
+  --color-text-inverse: 24 12 15;
 
-  --color-border-default: 33 33 38;
-  --color-border-hover: 56 56 64;
-  --color-border-focus: 201 150 94;
+  /* Rules */
+  --color-border-default: 74 43 49;
+  --color-border-hover: 118 76 82;
+  --color-border-focus: 158 190 240;
 
-  --color-accent-primary: 201 150 94;        /* Burnished brass */
-  --color-accent-secondary: 138 148 158;     /* Cold slate */
-  --color-accent-primary-hover: 224 176 118;
-  --color-accent-secondary-hover: 176 186 196;
+  /* The three inks */
+  --color-accent-primary: 255 116 92;         /* coral */
+  --color-accent-primary-hover: 255 150 130;
+  --color-accent-secondary: 158 190 240;      /* powder blue */
+  --color-accent-secondary-hover: 192 213 248;
+  --color-highlight: 240 205 96;              /* butter */
 
-  --color-success: 122 158 118;
-  --color-warning: 201 150 94;
-  --color-error: 186 92 82;
+  --color-success: 132 204 154;
+  --color-warning: 240 205 96;
+  --color-error: 255 128 116;
 
-  --color-shadow-light: 0 0 0 / 0.4;
-  --color-shadow-medium: 0 0 0 / 0.6;
+  /* Paper objects + the sun/moon disc */
+  --paper: 240 229 208;
+  --disc: 243 233 214;                /* the moon */
+  --shadow: 0 0 0;
+  --marker-ink: 24 12 15;             /* text sitting on a butter highlight */
 
-  /* Ambient light used by canvases + CSS glows */
-  --ambient-warm: 201 150 94;
-  --ambient-cool: 74 88 108;
-  --grain-opacity: 0.045;
+  /* 3D scene materials */
+  --scene-base: 104 62 70;
+  --scene-red: 255 116 92;
+  --scene-blue: 150 184 238;
+  --scene-butter: 240 205 96;
+  --scene-cream: 243 233 214;
+  --scene-shadow-opacity: 0.45;
+
+  --grain-opacity: 0.07;
+  --grain-blend: overlay;
 
   color-scheme: dark;
 }
 
-/* Light — warm paper, high contrast ink. */
+/* Daylight. */
 .light {
-  --color-bg-primary: 240 237 231;
-  --color-bg-secondary: 232 228 220;
-  --color-bg-tertiary: 223 218 208;
-  --color-bg-card: 250 248 244;
-  --color-bg-surface: 236 232 225;
-  --color-bg-hover: 226 221 212;
+  --color-bg-primary: 239 231 214;    /* paper */
+  --color-bg-secondary: 231 221 200;
+  --color-bg-tertiary: 221 208 182;
+  --color-bg-card: 251 247 238;
+  --color-bg-surface: 234 225 206;
+  --color-bg-hover: 224 212 188;
 
-  --color-text-primary: 22 21 20;
-  --color-text-secondary: 86 82 76;
-  --color-text-muted: 138 133 124;
-  --color-text-inverse: 247 245 241;
+  --color-text-primary: 28 22 19;     /* ink */
+  --color-text-secondary: 77 66 58;
+  --color-text-muted: 106 93 82;
+  --color-text-inverse: 251 247 238;
 
-  --color-border-default: 214 208 197;
-  --color-border-hover: 186 178 164;
-  --color-border-focus: 148 101 42;
+  --color-border-default: 205 192 168;
+  --color-border-hover: 150 136 116;
+  --color-border-focus: 36 64 196;
 
-  --color-accent-primary: 148 101 42;
-  --color-accent-secondary: 90 100 112;
-  --color-accent-primary-hover: 120 81 32;
-  --color-accent-secondary-hover: 66 76 88;
+  --color-accent-primary: 178 40 20;          /* vermilion */
+  --color-accent-primary-hover: 148 30 12;
+  --color-accent-secondary: 36 64 196;        /* cobalt */
+  --color-accent-secondary-hover: 25 46 156;
+  --color-highlight: 243 207 77;              /* butter */
 
-  --color-success: 78 118 74;
-  --color-warning: 158 110 42;
-  --color-error: 158 62 54;
+  --color-success: 38 112 72;
+  --color-warning: 150 100 10;
+  --color-error: 176 36 26;
 
-  --color-shadow-light: 40 34 26 / 0.06;
-  --color-shadow-medium: 40 34 26 / 0.14;
+  --paper: 251 247 238;
+  --disc: 243 196 60;                 /* the sun */
+  --shadow: 70 48 24;
+  --marker-ink: 28 22 19;
 
-  --ambient-warm: 148 101 42;
-  --ambient-cool: 150 160 172;
-  --grain-opacity: 0.03;
+  --scene-base: 40 32 29;
+  --scene-red: 214 62 36;
+  --scene-blue: 44 74 208;
+  --scene-butter: 243 200 66;
+  --scene-cream: 251 247 238;
+  --scene-shadow-opacity: 0.22;
+
+  --grain-opacity: 0.22;
+  --grain-blend: multiply;
 
   color-scheme: light;
 }
 
 /* ============================================================
-   2. TYPE + SPACE SCALE  (fluid, viewport-derived)
+   2. TYPE + SPACE SCALE (fluid)
    ============================================================ */
 :root {
-  --step--2: clamp(0.69rem, 0.66rem + 0.16vw, 0.78rem);
-  --step--1: clamp(0.83rem, 0.78rem + 0.24vw, 0.98rem);
-  --step-0:  clamp(1rem, 0.93rem + 0.35vw, 1.22rem);
-  --step-1:  clamp(1.2rem, 1.09rem + 0.55vw, 1.53rem);
-  --step-2:  clamp(1.44rem, 1.27rem + 0.85vw, 1.91rem);
-  --step-3:  clamp(1.73rem, 1.47rem + 1.28vw, 2.39rem);
-  --step-4:  clamp(2.07rem, 1.7rem + 1.87vw, 2.99rem);
-  --step-5:  clamp(2.49rem, 1.95rem + 2.68vw, 3.73rem);
-  --step-6:  clamp(2.99rem, 2.23rem + 3.79vw, 4.67rem);
-  --step-7:  clamp(3.58rem, 2.53rem + 5.28vw, 5.83rem);
-  --step-8:  clamp(4.3rem, 2.83rem + 7.33vw, 7.29rem);
+  --step--2: clamp(0.72rem, 0.69rem + 0.14vw, 0.8rem);
+  --step--1: clamp(0.86rem, 0.82rem + 0.2vw, 0.98rem);
+  --step-0:  clamp(1.02rem, 0.96rem + 0.3vw, 1.2rem);
+  --step-1:  clamp(1.2rem, 1.1rem + 0.5vw, 1.5rem);
+  --step-2:  clamp(1.44rem, 1.27rem + 0.85vw, 1.95rem);
+  --step-3:  clamp(1.73rem, 1.45rem + 1.4vw, 2.6rem);
+  --step-4:  clamp(2.07rem, 1.6rem + 2.3vw, 3.5rem);
+  --step-5:  clamp(2.49rem, 1.75rem + 3.7vw, 4.8rem);
+  --step-6:  clamp(2.99rem, 1.85rem + 5.7vw, 6.6rem);
+  --step-7:  clamp(3.4rem, 1.7rem + 8.5vw, 9rem);
+  --step-8:  clamp(3.8rem, 1.3rem + 12.5vw, 12rem);
 
-  --gutter: clamp(1.25rem, 4vw, 5rem);
-  --measure: 62ch;
+  --gutter: clamp(1.25rem, 4.5vw, 5.5rem);
+  --measure: 58ch;
+
+  /* The spine (desktop, left) and the dock (mobile, bottom). */
+  --rail: 0rem;
+  --dock: 3.75rem;
 
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-in-out-quart: cubic-bezier(0.76, 0, 0.24, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --rail: 3.75rem;
+    --dock: 0rem;
+  }
 }
 
 @layer base {
@@ -114,201 +155,305 @@
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
     scroll-behavior: auto; /* Lenis owns scrolling */
+    /* Tilted sheets and slide-in entrances must never widen the page. */
+    overflow-x: clip;
   }
 
   body {
-    font-family: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
+    font-family: 'Bricolage Grotesque Variable', ui-sans-serif, system-ui, sans-serif;
     font-size: var(--step-0);
-    line-height: 1.6;
+    line-height: 1.55;
     background-color: rgb(var(--color-bg-primary));
     color: rgb(var(--color-text-primary));
     overflow-x: clip;
   }
 
   h1, h2, h3, h4 {
-    font-weight: 500;
+    font-family: 'Fraunces Variable', ui-serif, Georgia, serif;
+    font-variation-settings: 'SOFT' 100, 'WONK' 1;
+    font-optical-sizing: auto;
+    font-weight: 560;
     line-height: 0.95;
-    letter-spacing: -0.035em;
+    letter-spacing: -0.03em;
     text-wrap: balance;
   }
 
   p { text-wrap: pretty; }
 
   ::selection {
-    background: rgb(var(--color-accent-primary));
-    color: rgb(var(--color-text-inverse));
+    background: rgb(var(--color-highlight));
+    color: rgb(var(--marker-ink));
   }
 
   /* Focus rings stay visible for keyboard users only. */
   :focus-visible {
-    outline: 1px solid rgb(var(--color-accent-primary));
+    outline: 2px solid rgb(var(--color-border-focus));
     outline-offset: 3px;
+    border-radius: 2px;
   }
 
-  /* Native cursor is replaced only where a real pointer exists. */
-  @media (pointer: fine) {
-    html.has-custom-cursor,
-    html.has-custom-cursor * {
-      cursor: none !important;
-    }
-  }
-
-  ::-webkit-scrollbar { width: 9px; }
+  ::-webkit-scrollbar { width: 10px; }
   ::-webkit-scrollbar-track { background: rgb(var(--color-bg-primary)); }
   ::-webkit-scrollbar-thumb {
     background: rgb(var(--color-border-hover));
-    border-radius: 99px;
     border: 3px solid rgb(var(--color-bg-primary));
   }
-  ::-webkit-scrollbar-thumb:hover { background: rgb(var(--color-accent-primary) / 0.7); }
+  ::-webkit-scrollbar-thumb:hover { background: rgb(var(--color-accent-primary)); }
 }
 
 /* ============================================================
-   3. COMPONENT PRIMITIVES
+   3. THE VISUAL LANGUAGE
    ============================================================ */
 @layer components {
-  /* --- Editorial shell --- */
+  /* Page wrapper: clears the spine on desktop, the dock on mobile. */
+  .page {
+    padding-left: var(--rail);
+    padding-bottom: var(--dock);
+  }
+
   .shell {
     width: 100%;
-    max-width: 96rem;
+    max-width: 92rem;
     margin-inline: auto;
     padding-inline: var(--gutter);
   }
 
-  /* --- Section eyebrow: index + label, hairline rule --- */
-  .eyebrow {
-    display: flex;
-    align-items: center;
-    gap: 0.9rem;
-    font-size: var(--step--2);
-    letter-spacing: 0.28em;
-    text-transform: uppercase;
-    color: rgb(var(--color-text-muted));
-    font-weight: 500;
+  /* --- Type roles --- */
+  .display {
+    font-family: 'Fraunces Variable', ui-serif, Georgia, serif;
+    font-variation-settings: 'SOFT' 100, 'WONK' 1;
+    font-weight: 600;
+    letter-spacing: -0.035em;
+    line-height: 0.9;
   }
-  .eyebrow::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: linear-gradient(
-      to right,
-      rgb(var(--color-border-hover)),
-      transparent
+  /* The italic is the expressive voice: lighter, looser, always an accent. */
+  .display-i {
+    font-family: 'Fraunces Variable', ui-serif, Georgia, serif;
+    font-variation-settings: 'SOFT' 100, 'WONK' 1;
+    font-style: italic;
+    font-weight: 380;
+    letter-spacing: -0.02em;
+  }
+  /* Margin notes. */
+  .hand {
+    font-family: 'Caveat Variable', 'Segoe Print', cursive;
+    font-weight: 600;
+    font-size: 1.4em;
+    line-height: 1.05;
+    letter-spacing: 0;
+  }
+  /* Small caps labels. */
+  .label {
+    font-size: var(--step--2);
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    line-height: 1.3;
+  }
+
+  /* --- Highlighter swipe behind a word --- */
+  .marker {
+    background-image: linear-gradient(
+      transparent 0 52%,
+      rgb(var(--color-highlight)) 52% 92%,
+      transparent 92%
+    );
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    padding-inline: 0.08em;
+    margin-inline: -0.08em;
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+  }
+  .dark .marker {
+    background-image: linear-gradient(
+      transparent 0 58%,
+      rgb(var(--color-highlight) / 0.34) 58% 92%,
+      transparent 92%
     );
   }
 
-  /* --- Display type --- */
-  .display {
-    font-size: var(--step-7);
-    font-weight: 500;
-    letter-spacing: -0.045em;
-    line-height: 0.9;
+  /* --- Text link: ink underline that fills with highlighter --- */
+  .link-ink {
+    text-decoration: underline;
+    text-decoration-thickness: 0.09em;
+    text-underline-offset: 0.22em;
+    text-decoration-color: rgb(var(--color-accent-primary));
+    transition: color 0.3s, text-decoration-color 0.3s;
   }
-  .serif {
-    font-family: 'Instrument Serif', ui-serif, Georgia, serif;
-    font-weight: 400;
-    letter-spacing: -0.01em;
-  }
-  .serif-italic {
-    font-family: 'Instrument Serif', ui-serif, Georgia, serif;
-    font-style: italic;
-    font-weight: 400;
-    letter-spacing: -0.01em;
-  }
-
-  /* Outline / stroked type for depth layering */
-  .outline-type {
-    color: transparent;
-    -webkit-text-stroke: 1px rgb(var(--color-text-primary) / 0.35);
-  }
-
-  /* --- Line masking: parent clips, child slides --- */
-  .line-mask {
-    display: block;
-    overflow: hidden;
-    padding-bottom: 0.12em;
-    margin-bottom: -0.12em;
+  .link-ink:hover {
+    color: rgb(var(--color-accent-primary));
   }
 
   /* --- Hairline rule --- */
   .rule {
     height: 1px;
     width: 100%;
-    background: rgb(var(--color-border-default));
+    background: rgb(var(--color-text-primary) / 0.22);
   }
 
-  /* --- Link with sweeping underline --- */
-  .link-sweep {
-    position: relative;
-    display: inline-block;
+  /* --- Paper objects ---
+     Anything with .paper is a physical sheet. It keeps daylight ink in
+     both themes by re-declaring the tokens locally, so every Tailwind
+     colour utility inside it resolves to ink-on-paper automatically. */
+  .paper {
+    --color-text-primary: 28 22 19;
+    --color-text-secondary: 77 66 58;
+    --color-text-muted: 106 93 82;
+    --color-text-inverse: 251 247 238;
+    --color-border-default: 205 192 168;
+    --color-border-hover: 150 136 116;
+    --color-border-focus: 36 64 196;
+    --color-accent-primary: 178 40 20;
+    --color-accent-primary-hover: 148 30 12;
+    --color-accent-secondary: 36 64 196;
+    --color-accent-secondary-hover: 25 46 156;
+    --color-highlight: 243 207 77;
+    --color-success: 38 112 72;
+    --color-error: 176 36 26;
+    --color-bg-hover: 236 228 210;
+    --marker-ink: 28 22 19;
+    background-color: rgb(var(--paper));
+    color: rgb(var(--color-text-primary));
+    color-scheme: light;
   }
-  .link-sweep::after {
-    content: '';
+
+  /* A strip of masking tape. Place inside a relatively-positioned sheet. */
+  .tape {
     position: absolute;
-    left: 0;
-    bottom: -0.12em;
-    height: 1px;
-    width: 100%;
-    background: currentColor;
-    transform: scaleX(0);
-    transform-origin: right;
-    transition: transform 0.55s var(--ease-out-expo);
-  }
-  .link-sweep:hover::after {
-    transform: scaleX(1);
-    transform-origin: left;
+    width: 5.5rem;
+    height: 1.6rem;
+    background: rgb(var(--color-highlight) / 0.72);
+    box-shadow: 0 1px 2px rgb(var(--shadow) / 0.25);
+    /* torn ends */
+    clip-path: polygon(0 12%, 4% 0, 8% 14%, 12% 2%, 100% 0, 97% 30%, 100% 55%, 96% 80%, 100% 100%, 6% 100%, 2% 82%, 5% 60%, 0 40%);
+    pointer-events: none;
   }
 
-  /* --- Field (form input) --- */
+  /* --- Stamp button: sits proud of the page, presses down. --- */
+  .stamp {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.7rem;
+    padding: 0.85rem 1.3rem;
+    border: 2px solid rgb(var(--color-text-primary));
+    background: rgb(var(--color-bg-primary));
+    color: rgb(var(--color-text-primary));
+    font-size: var(--step--1);
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    line-height: 1;
+    box-shadow: 4px 4px 0 rgb(var(--color-text-primary));
+    transition:
+      transform 0.18s var(--ease-out-expo),
+      box-shadow 0.18s var(--ease-out-expo),
+      background-color 0.25s,
+      color 0.25s;
+  }
+  .stamp:hover {
+    transform: translate(-1px, -1px);
+    box-shadow: 6px 6px 0 rgb(var(--color-accent-primary));
+  }
+  .stamp:active {
+    transform: translate(4px, 4px);
+    box-shadow: 0 0 0 rgb(var(--color-text-primary));
+  }
+  .stamp:disabled { opacity: 0.6; cursor: wait; }
+  .paper .stamp { background: rgb(var(--paper)); }
+  .stamp--solid {
+    background: rgb(var(--color-accent-primary));
+    color: rgb(var(--color-text-inverse));
+  }
+  .paper .stamp--solid { background: rgb(var(--color-accent-primary)); }
+
+  /* --- Postcard fields: you write on the lines. --- */
   .field {
     width: 100%;
     background: transparent;
     border: 0;
-    border-bottom: 1px solid rgb(var(--color-border-default));
-    padding: 0.9rem 0;
+    border-bottom: 1.5px solid rgb(var(--color-text-primary) / 0.45);
+    border-radius: 0;
+    padding: 0.45rem 0;
     color: rgb(var(--color-text-primary));
     font-size: var(--step-0);
-    transition: border-color 0.4s var(--ease-out-expo);
+    transition: border-color 0.3s;
   }
-  .field::placeholder { color: rgb(var(--color-text-muted)); }
+  .field::placeholder { color: rgb(var(--color-text-muted)); opacity: 1; }
   .field:focus {
     outline: none;
-    border-bottom-color: rgb(var(--color-accent-primary));
+    border-bottom-color: rgb(var(--color-accent-secondary));
+    border-bottom-width: 2px;
+  }
+  .field--ruled {
+    border-bottom: 0;
+    padding: 0;
+    line-height: 2.25rem;
+    background-image: repeating-linear-gradient(
+      to bottom,
+      transparent 0 calc(2.25rem - 1.5px),
+      rgb(var(--color-text-primary) / 0.3) calc(2.25rem - 1.5px) 2.25rem
+    );
+    background-attachment: local;
+  }
+  .field--ruled:focus {
+    border-bottom-width: 0;
+    background-image: repeating-linear-gradient(
+      to bottom,
+      transparent 0 calc(2.25rem - 1.5px),
+      rgb(var(--color-accent-secondary) / 0.7) calc(2.25rem - 1.5px) 2.25rem
+    );
   }
 
-  /* --- Film grain: one fixed layer over the whole document --- */
+  /* --- Printer's crop marks, for the corners of a "sheet" --- */
+  .crop {
+    position: absolute;
+    width: 1.1rem;
+    height: 1.1rem;
+    pointer-events: none;
+    color: rgb(var(--color-text-primary) / 0.5);
+  }
+  .crop::before,
+  .crop::after {
+    content: '';
+    position: absolute;
+    background: currentColor;
+  }
+  .crop::before { left: 0; right: 0; top: 50%; height: 1px; }
+  .crop::after { top: 0; bottom: 0; left: 50%; width: 1px; }
+
+  /* --- Paper grain: one fixed, static layer over the whole document --- */
   .grain {
     position: fixed;
-    inset: -50%;
+    inset: 0;
     z-index: 90;
     pointer-events: none;
     opacity: var(--grain-opacity);
-    mix-blend-mode: overlay;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
-    will-change: transform;
-    animation: grain-shift 6s steps(6) infinite;
+    mix-blend-mode: var(--grain-blend);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0.9 0'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)'/%3E%3C/svg%3E");
   }
 
-  /* --- Vignette to seat the canvas layers in space --- */
-  .vignette {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    background: radial-gradient(
-      120% 90% at 50% 30%,
-      transparent 35%,
-      rgb(var(--color-bg-primary) / 0.65) 100%
-    );
+  /* --- Ticket: notched sides + a perforation line --- */
+  .ticket {
+    -webkit-mask-image:
+      radial-gradient(circle at 0 50%, transparent 0.85rem, #000 0.9rem),
+      radial-gradient(circle at 100% 50%, transparent 0.85rem, #000 0.9rem);
+    mask-image:
+      radial-gradient(circle at 0 50%, transparent 0.85rem, #000 0.9rem),
+      radial-gradient(circle at 100% 50%, transparent 0.85rem, #000 0.9rem);
+    -webkit-mask-composite: source-in;
+    mask-composite: intersect;
   }
-}
+  .perforation {
+    border-left: 2px dashed rgb(var(--color-text-primary) / 0.35);
+  }
 
-@keyframes grain-shift {
-  0%   { transform: translate(0, 0); }
-  20%  { transform: translate(-4%, 3%); }
-  40%  { transform: translate(3%, -5%); }
-  60%  { transform: translate(-2%, 4%); }
-  80%  { transform: translate(4%, 2%); }
-  100% { transform: translate(0, 0); }
+  /* --- Postage stamp edge --- */
+  .postage {
+    padding: 0.4rem;
+    background:
+      radial-gradient(circle at 0.35rem 0.35rem, transparent 0.2rem, rgb(var(--color-bg-hover)) 0.22rem) -0.35rem -0.35rem / 0.7rem 0.7rem;
+  }
 }
 
 /* ============================================================
@@ -318,11 +463,41 @@
   .fill-parent { position: absolute; inset: 0; }
   .no-scrollbar::-webkit-scrollbar { display: none; }
   .measure { max-width: var(--measure); }
+  .vertical { writing-mode: vertical-rl; }
+  .wonk-0 { font-variation-settings: 'SOFT' 100, 'WONK' 0; }
 }
 
-/* Elements animated in by GSAP start hidden — avoids a flash of
+/* Elements animated in by GSAP start hidden — avoids a flash of the
    final state before the timeline is built. */
-[data-anim] { visibility: hidden; }
+[data-anim],
+[data-reveal] { visibility: hidden; }
+
+/* Theme change: for a moment, every colour eases instead of snapping. */
+html.theme-switching,
+html.theme-switching *,
+html.theme-switching *::before,
+html.theme-switching *::after {
+  transition:
+    background-color 0.6s var(--ease-out-expo),
+    color 0.6s var(--ease-out-expo),
+    border-color 0.6s var(--ease-out-expo),
+    box-shadow 0.6s var(--ease-out-expo),
+    fill 0.6s var(--ease-out-expo),
+    stroke 0.6s var(--ease-out-expo) !important;
+}
+
+/* Toasts follow the palette rather than the library default. */
+:root {
+  --toastify-font-family: 'Bricolage Grotesque Variable', system-ui, sans-serif;
+  --toastify-color-light: rgb(var(--paper));
+  --toastify-text-color-light: rgb(28 22 19);
+  --toastify-color-error: rgb(178 40 20);
+}
+.Toastify__toast {
+  border-radius: 0;
+  border: 2px solid rgb(28 22 19);
+  box-shadow: 4px 4px 0 rgb(28 22 19);
+}
 
 /* ============================================================
    5. REDUCED MOTION
@@ -338,6 +513,21 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
-  .grain { animation: none; }
-  [data-anim] { visibility: visible !important; }
+  [data-anim],
+  [data-reveal] { visibility: visible !important; }
+}
+
+/* Line mask: parent clips, child slides. Padding keeps descenders. */
+.line-mask {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.14em;
+  margin-bottom: -0.14em;
+}
+
+/* KineticText line masks (SplitText adds "-mask" to the lines class):
+   leave room for descenders so a tight headline never loses its tails. */
+.overflow-hidden-mask {
+  padding-bottom: 0.2em;
+  margin-bottom: -0.2em;
 }

@@ -14,9 +14,9 @@ const systemTheme = () =>
   window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
 
 export const ThemeProvider = ({ children }) => {
-  // Dark is the designed default — the palette, the WebGL layers and the
-  // grain are all tuned for it. The system preference only takes over
-  // when the visitor explicitly resets. This mirrors the inline script in
+  // Dark is the default on a first visit; both themes are designed in
+  // their own right. The system preference only takes over when the
+  // visitor explicitly resets. This mirrors the inline script in
   // index.html, which resolves the same value before first paint.
   const [theme, setTheme] = useState(() => {
     if (typeof window === 'undefined') return 'dark';
@@ -28,7 +28,9 @@ export const ThemeProvider = ({ children }) => {
     const root = document.documentElement;
     root.classList.remove('light', 'dark');
     root.classList.add(theme);
-    root.style.backgroundColor = theme === 'light' ? '#f0ede7' : '#0a0a0c';
+    const ground = theme === 'light' ? '#efe7d6' : '#180c0f';
+    root.style.backgroundColor = ground;
+    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', ground);
   }, [theme]);
 
   const updateTheme = useCallback((next) => {

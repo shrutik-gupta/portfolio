@@ -51,6 +51,11 @@ const KineticText = ({
         autoSplit: true,
         onSplit(self) {
           gsap.set(el, { visibility: 'visible' });
+          // Room for descenders: tight headline leading would otherwise let
+          // the mask slice the tails off g, j, p and y.
+          if (self.masks?.length) {
+            gsap.set(self.masks, { paddingBottom: '0.22em', marginBottom: '-0.22em' });
+          }
           return gsap.from(self[targetKey], {
             yPercent: parseFloat(y),
             rotate,

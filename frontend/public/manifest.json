@@ -3,8 +3,8 @@
   "short_name": "Portfolio",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#cb5d5d",
+  "background_color": "#efe7d6",
+  "theme_color": "#c8341b",
   "screenshots": [
     {
       "src": "/screenshots/desktop.png",

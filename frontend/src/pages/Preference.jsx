@@ -1,21 +1,29 @@
 import React, { useState } from 'react';
-import { Check, Moon, Sun, RotateCcw } from 'lucide-react';
+import { Check, RotateCcw } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
+import { easeThemeChange } from '../lib/themeSwitch';
 import Navbar from '../components/Navbar';
 import Magnetic from '../components/Magnetic';
 
 const THEMES = [
   {
-    id: 'dark',
-    name: 'Obsidian',
-    icon: Moon,
-    note: 'The intended look. Deep greys, warm brass, full WebGL.',
+    id: 'light',
+    name: 'Daylight',
+    note: 'Warm paper and black ink. Good for bright rooms and long reads.',
+    // Shown as a miniature of the theme, whatever the current one is.
+    ground: '#efe7d6',
+    ink: '#1c1613',
+    disc: '#f3c43c',
+    inks: ['#b22814', '#2440c4', '#f3cf4d'],
   },
   {
-    id: 'light',
-    name: 'Paper',
-    icon: Sun,
-    note: 'Warm bone and ink, for bright rooms and long reads.',
+    id: 'dark',
+    name: 'After dark',
+    note: 'A wine-dark desk with the lamp on. Easier on the eyes at night.',
+    ground: '#180c0f',
+    ink: '#f3e9d6',
+    disc: '#f3e9d6',
+    inks: ['#ff745c', '#9ebef0', '#f0cd60'],
   },
 ];
 
@@ -31,95 +39,113 @@ const Preference = () => {
   return (
     <>
       <Navbar />
-      <div className="min-h-[100svh] px-gutter pb-20 pt-32">
-        <p className="eyebrow mb-10">Preferences</p>
+      <main className="page">
+        <div className="shell min-h-[100svh] pb-20 pt-24 lg:pt-16">
+          <p className="label mb-6 text-accent-primary">Preferences</p>
 
-        <h1 className="mb-14 max-w-[14ch] text-fluid-6 text-text-primary">
-          Set the{' '}
-          <span className="serif-italic text-accent-primary">surface</span>
-        </h1>
+          <h1 className="mb-12 max-w-[12ch] text-fluid-7 text-text-primary">
+            Pick your <span className="display-i text-accent-primary">light</span>
+          </h1>
 
-        <div className="max-w-3xl">
-          <div className="grid gap-4 sm:grid-cols-2">
-            {THEMES.map((option) => {
-              const Icon = option.icon;
-              const isSelected = theme === option.id;
+          <div className="max-w-4xl">
+            <div className="grid gap-6 sm:grid-cols-2">
+              {THEMES.map((option, i) => {
+                const isSelected = theme === option.id;
 
-              return (
+                return (
+                  <button
+                    key={option.id}
+                    type="button"
+                    aria-pressed={isSelected}
+                    onClick={() => {
+                      easeThemeChange();
+                      updateTheme(option.id);
+                      flash();
+                    }}
+                    className={`group relative flex flex-col text-left transition-transform duration-500 ease-spring hover:-translate-y-1 hover:rotate-0 ${
+                      i === 0 ? '-rotate-1' : 'rotate-1'
+                    }`}
+                  >
+                    {/* A swatch card of the theme */}
+                    <span
+                      className={`relative block aspect-[4/3] w-full overflow-hidden border-2 shadow-print ${
+                        isSelected ? 'border-accent-primary' : 'border-text-primary'
+                      }`}
+                      style={{ background: option.ground }}
+                    >
+                      <span
+                        className="absolute left-1/2 top-[58%] aspect-square w-[46%] -translate-x-1/2 -translate-y-1/2 rounded-full transition-transform duration-700 ease-out-expo group-hover:-translate-y-[62%]"
+                        style={{ background: option.disc }}
+                      />
+                      <span
+                        className="absolute inset-x-0 bottom-0 h-[30%] border-t-2"
+                        style={{ background: option.ground, borderColor: option.ink }}
+                      />
+                      <span className="absolute bottom-3 left-3 flex gap-1.5">
+                        {option.inks.map((c) => (
+                          <span key={c} className="block h-4 w-4 rounded-full" style={{ background: c }} />
+                        ))}
+                      </span>
+                      <span
+                        className="display absolute left-3 top-2 text-fluid-3"
+                        style={{ color: option.ink }}
+                      >
+                        Aa
+                      </span>
+                      {isSelected && (
+                        <span className="absolute right-3 top-3 grid h-7 w-7 place-items-center rounded-full bg-accent-primary text-text-inverse">
+                          <Check className="h-4 w-4" aria-hidden="true" />
+                        </span>
+                      )}
+                    </span>
+
+                    <span className="mt-4 font-display text-fluid-3 font-semibold leading-tight text-text-primary">
+                      {option.name}
+                    </span>
+                    <span className="mt-1 text-fluid--1 text-text-secondary">{option.note}</span>
+                  </button>
+                );
+              })}
+            </div>
+
+            <div className="mt-12 flex flex-wrap items-center gap-6 border-t-2 border-text-primary pt-8">
+              <Magnetic strength={0.2}>
                 <button
-                  key={option.id}
                   type="button"
-                  data-cursor="link"
                   onClick={() => {
-                    updateTheme(option.id);
+                    easeThemeChange();
+                    resetToSystem();
                     flash();
                   }}
-                  className={`group relative flex flex-col gap-3 border p-6 text-left transition-colors duration-500 ease-out-expo ${
-                    isSelected
-                      ? 'border-accent-primary bg-bg-surface'
-                      : 'border-border-default hover:border-border-hover'
-                  }`}
+                  className="stamp"
                 >
-                  <span className="flex items-center justify-between">
-                    <Icon
-                      className={`h-5 w-5 ${
-                        isSelected ? 'text-accent-primary' : 'text-text-muted'
-                      }`}
-                    />
-                    {isSelected && (
-                      <span className="flex h-5 w-5 items-center justify-center rounded-full bg-accent-primary">
-                        <Check className="h-3 w-3 text-text-inverse" />
-                      </span>
-                    )}
+                  <span data-magnetic-inner className="flex items-center gap-3">
+                    <RotateCcw className="h-4 w-4" aria-hidden="true" />
+                    Follow my device
                   </span>
-                  <span className="text-fluid-2 text-text-primary">{option.name}</span>
-                  <span className="text-fluid--1 text-text-secondary">{option.note}</span>
                 </button>
-              );
-            })}
-          </div>
+              </Magnetic>
 
-          <div className="mt-10 flex flex-wrap items-center gap-6 border-t border-border-default pt-8">
-            <Magnetic strength={0.35}>
-              <button
-                type="button"
-                data-cursor="link"
-                onClick={() => {
-                  resetToSystem();
-                  flash();
-                }}
-                className="flex items-center gap-3 rounded-full border border-border-default px-6 py-3 text-fluid--2 uppercase tracking-[0.2em] text-text-secondary transition-colors duration-500 hover:border-accent-primary hover:text-accent-primary"
-              >
-                <span data-magnetic-inner className="flex items-center gap-3">
-                  <RotateCcw className="h-4 w-4" />
-                  Follow system
-                </span>
-              </button>
-            </Magnetic>
+              <p role="status" aria-live="polite" className="label text-text-muted">
+                {saved ? (
+                  <span className="text-success">Saved</span>
+                ) : (
+                  <>
+                    Current<span className="mx-3 text-accent-primary">/</span>
+                    {theme === 'dark' ? 'After dark' : 'Daylight'}
+                  </>
+                )}
+              </p>
+            </div>
 
-            <p
-              role="status"
-              aria-live="polite"
-              className="text-fluid--2 uppercase tracking-[0.2em] text-text-muted"
-            >
-              {saved ? (
-                <span className="text-success">Saved</span>
-              ) : (
-                <>
-                  Current<span className="mx-3 text-accent-primary">/</span>
-                  {theme}
-                </>
-              )}
+            <p className="measure mt-10 text-fluid--1 text-text-muted">
+              Motion follows your device’s reduce-motion setting. With it on,
+              smooth scrolling, the 3D blocks and scroll-driven animation are
+              swapped for plain, still versions.
             </p>
           </div>
-
-          <p className="mt-10 text-fluid--1 text-text-muted">
-            Motion respects your system’s reduce-motion setting: with it on, the
-            smooth scrolling, WebGL layers and scroll-driven sequences are
-            replaced by plain, static equivalents.
-          </p>
         </div>
-      </div>
+      </main>
     </>
   );
 };

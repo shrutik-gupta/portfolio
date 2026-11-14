@@ -1,47 +1,51 @@
 /** @type {import('tailwindcss').Config} */
+const token = (name) => `rgb(var(--color-${name}) / <alpha-value>)`;
+
 export default {
   darkMode: 'class',
-  content: [
-    './index.html',
-    './src/**/*.{js,jsx,ts,tsx}',
-  ],
+  content: ['./index.html', './src/**/*.{js,jsx,ts,tsx}'],
   theme: {
     extend: {
       colors: {
-        // Background Colors
-        'bg-primary': 'rgb(var(--color-bg-primary) / <alpha-value>)',
-        'bg-secondary': 'rgb(var(--color-bg-secondary) / <alpha-value>)',
-        'bg-tertiary': 'rgb(var(--color-bg-tertiary) / <alpha-value>)',
-        'bg-card': 'rgb(var(--color-bg-card) / <alpha-value>)',
-        'bg-surface': 'rgb(var(--color-bg-surface) / <alpha-value>)',
-        'bg-hover': 'rgb(var(--color-bg-hover) / <alpha-value>)',
+        // Grounds
+        'bg-primary': token('bg-primary'),
+        'bg-secondary': token('bg-secondary'),
+        'bg-tertiary': token('bg-tertiary'),
+        'bg-card': token('bg-card'),
+        'bg-surface': token('bg-surface'),
+        'bg-hover': token('bg-hover'),
 
-        // Text Colors
-        'text-primary': 'rgb(var(--color-text-primary) / <alpha-value>)',
-        'text-secondary': 'rgb(var(--color-text-secondary) / <alpha-value>)',
-        'text-muted': 'rgb(var(--color-text-muted) / <alpha-value>)',
-        'text-inverse': 'rgb(var(--color-text-inverse) / <alpha-value>)',
+        // Ink
+        'text-primary': token('text-primary'),
+        'text-secondary': token('text-secondary'),
+        'text-muted': token('text-muted'),
+        'text-inverse': token('text-inverse'),
 
-        // Border Colors
-        'border-default': 'rgb(var(--color-border-default) / <alpha-value>)',
-        'border-hover': 'rgb(var(--color-border-hover) / <alpha-value>)',
-        'border-focus': 'rgb(var(--color-border-focus) / <alpha-value>)',
+        // Rules
+        'border-default': token('border-default'),
+        'border-hover': token('border-hover'),
+        'border-focus': token('border-focus'),
 
-        // Accent Colors
-        'accent-primary': 'rgb(var(--color-accent-primary) / <alpha-value>)',
-        'accent-secondary': 'rgb(var(--color-accent-secondary) / <alpha-value>)',
-        'accent-primary-hover': 'rgb(var(--color-accent-primary-hover) / <alpha-value>)',
-        'accent-secondary-hover': 'rgb(var(--color-accent-secondary-hover) / <alpha-value>)',
+        // The three inks
+        'accent-primary': token('accent-primary'),
+        'accent-secondary': token('accent-secondary'),
+        'accent-primary-hover': token('accent-primary-hover'),
+        'accent-secondary-hover': token('accent-secondary-hover'),
+        highlight: token('highlight'),
 
-        // Status Colors
-        'success': 'rgb(var(--color-success) / <alpha-value>)',
-        'warning': 'rgb(var(--color-warning) / <alpha-value>)',
-        'error': 'rgb(var(--color-error) / <alpha-value>)',
+        // Objects that stay paper-coloured in both themes
+        paper: 'rgb(var(--paper) / <alpha-value>)',
+        disc: 'rgb(var(--disc) / <alpha-value>)',
+
+        success: token('success'),
+        warning: token('warning'),
+        error: token('error'),
       },
       fontFamily: {
-        sans: ['Space Grotesk', 'ui-sans-serif', 'system-ui', 'sans-serif'],
-        display: ['Space Grotesk', 'ui-sans-serif', 'system-ui', 'sans-serif'],
-        serif: ['Instrument Serif', 'ui-serif', 'Georgia', 'serif'],
+        sans: ['"Bricolage Grotesque Variable"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        display: ['"Fraunces Variable"', 'ui-serif', 'Georgia', 'serif'],
+        serif: ['"Fraunces Variable"', 'ui-serif', 'Georgia', 'serif'],
+        hand: ['"Caveat Variable"', '"Segoe Print"', 'cursive'],
       },
       // Fluid scale — mirrors the --step-* custom properties in index.css
       fontSize: {
@@ -59,41 +63,44 @@ export default {
       },
       spacing: {
         gutter: 'var(--gutter)',
+        rail: 'var(--rail)',
+        dock: 'var(--dock)',
       },
       maxWidth: {
         measure: 'var(--measure)',
-        shell: '96rem',
+        shell: '92rem',
       },
       transitionTimingFunction: {
         'out-expo': 'cubic-bezier(0.16, 1, 0.3, 1)',
         'in-out-quart': 'cubic-bezier(0.76, 0, 0.24, 1)',
+        spring: 'cubic-bezier(0.34, 1.56, 0.64, 1)',
       },
       boxShadow: {
-        'custom-light': '0 4px 6px -1px rgb(var(--color-shadow-light)), 0 2px 4px -1px rgb(var(--color-shadow-light))',
-        'custom-medium': '0 10px 15px -3px rgb(var(--color-shadow-medium)), 0 4px 6px -2px rgb(var(--color-shadow-medium))',
-        'lift': '0 24px 60px -20px rgb(var(--color-shadow-medium))',
-        'accent-primary': '0 0 0 3px rgb(var(--color-accent-primary) / 0.3)',
-        'accent-secondary': '0 0 0 3px rgb(var(--color-accent-secondary) / 0.3)',
-      },
-      backgroundImage: {
-        'gradient-primary': 'linear-gradient(135deg, rgb(var(--color-accent-primary)) 0%, rgb(var(--color-accent-secondary)) 100%)',
-        'gradient-bg': 'linear-gradient(180deg, rgb(var(--color-bg-primary)) 0%, rgb(var(--color-bg-secondary)) 100%)',
-      },
-      animation: {
-        'fade-in': 'fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
-        'slide-up': 'slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1)',
+        print: '0 1px 1px rgb(var(--shadow) / 0.10), 0 10px 24px -8px rgb(var(--shadow) / 0.30), 0 30px 60px -30px rgb(var(--shadow) / 0.35)',
+        'print-lift': '0 2px 2px rgb(var(--shadow) / 0.10), 0 24px 40px -12px rgb(var(--shadow) / 0.38), 0 50px 80px -40px rgb(var(--shadow) / 0.45)',
+        hard: '4px 4px 0 rgb(var(--color-text-primary))',
       },
       keyframes: {
-        fadeIn: {
-          '0%': { opacity: '0' },
-          '100%': { opacity: '1' },
+        'pop-in': {
+          '0%': { transform: 'scale(0.6) rotate(-8deg)', opacity: '0' },
+          '100%': { transform: 'scale(1) rotate(var(--tw-rotate, 0deg))', opacity: '1' },
         },
-        slideUp: {
-          '0%': { transform: 'translateY(12px)', opacity: '0' },
-          '100%': { transform: 'translateY(0)', opacity: '1' },
+        'stamp-in': {
+          '0%': { transform: 'scale(2.2) rotate(-24deg)', opacity: '0' },
+          '60%': { transform: 'scale(0.94) rotate(-12deg)', opacity: '1' },
+          '100%': { transform: 'scale(1) rotate(-12deg)', opacity: '1' },
         },
+        nudge: {
+          '0%, 100%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(5px)' },
+        },
+      },
+      animation: {
+        'pop-in': 'pop-in 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both',
+        'stamp-in': 'stamp-in 0.55s cubic-bezier(0.16, 1, 0.3, 1) both',
+        nudge: 'nudge 1.8s ease-in-out infinite',
       },
     },
   },
   plugins: [],
-}
+};

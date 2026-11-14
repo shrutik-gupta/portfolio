@@ -1,33 +1,35 @@
 import { useEffect, useState } from 'react';
 import * as THREE from 'three';
 
-const readVar = (name, fallback) => {
-  if (typeof window === 'undefined') return fallback;
-  const raw = getComputedStyle(document.documentElement)
-    .getPropertyValue(name)
-    .trim();
-  if (!raw) return fallback;
-  const [r, g, b] = raw.split(/\s+/).map(Number);
-  if ([r, g, b].some(Number.isNaN)) return fallback;
-  return `rgb(${r},${g},${b})`;
+const root = () => getComputedStyle(document.documentElement);
+
+/** Reads an "r g b" design token and returns a colour-managed THREE.Color. */
+const readColor = (name, fallback) => {
+  const raw = typeof window === 'undefined' ? '' : root().getPropertyValue(name).trim();
+  const parts = raw.split(/\s+/).map(Number);
+  const [r, g, b] = parts.length === 3 && !parts.some(Number.isNaN) ? parts : fallback;
+  return new THREE.Color().setRGB(r / 255, g / 255, b / 255, THREE.SRGBColorSpace);
 };
 
-const make = (name, fallback) =>
-  new THREE.Color(readVar(name, fallback)).convertSRGBToLinear();
+const readNumber = (name, fallback) => {
+  const v = typeof window === 'undefined' ? NaN : parseFloat(root().getPropertyValue(name));
+  return Number.isNaN(v) ? fallback : v;
+};
 
 const readPalette = () => ({
-  background: make('--color-bg-primary', 'rgb(10,10,12)'),
-  surface: make('--color-bg-surface', 'rgb(26,26,31)'),
-  accent: make('--ambient-warm', 'rgb(201,150,94)'),
-  cool: make('--ambient-cool', 'rgb(74,88,108)'),
-  text: make('--color-text-primary', 'rgb(237,234,227)'),
+  base: readColor('--scene-base', [104, 62, 70]),
+  red: readColor('--scene-red', [255, 116, 92]),
+  blue: readColor('--scene-blue', [150, 184, 238]),
+  butter: readColor('--scene-butter', [240, 205, 96]),
+  cream: readColor('--scene-cream', [243, 233, 214]),
+  shadowOpacity: readNumber('--scene-shadow-opacity', 0.3),
 });
 
 /**
- * Bridges the CSS design tokens into three.js colour space so the WebGL
- * layers repaint when the theme flips. Watching the root class is what
- * keeps the canvases in sync with ThemeContext without wiring every
- * scene into React state.
+ * Bridges the CSS design tokens into three.js so the blocks are painted
+ * with the same inks as the page, and repaint when the theme flips.
+ * Watching the root class keeps the canvases in sync with ThemeContext
+ * without wiring every scene into React state.
  */
 export const useThemeColors = () => {
   const [colors, setColors] = useState(readPalette);

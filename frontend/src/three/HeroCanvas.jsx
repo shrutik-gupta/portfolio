@@ -1,23 +1,27 @@
 import React from 'react';
 import Stage from './Stage';
-import ShardField from './ShardField';
+import Maquette from './Maquette';
+
+const CAMERA = { position: [7, 5.4, 8], near: 0.1, far: 60, zoom: 60 };
 
 /**
- * Hero WebGL layer. Lazy-imported by the Hero section so three.js stays
- * out of the initial bundle — the page is readable and interactive
- * before the scene arrives.
+ * The maquette's canvas. Lazy-imported, so three.js stays out of the
+ * initial bundle — the page is readable before the blocks arrive.
  *
- * The camera sits outside the field and near its ground plane, looking
- * across it. Inside the disc the nearest shards tower over the frame and
- * occlude everything; high above it, the shards foreshorten into flat
- * tiles. Roughly eye level with the tips is what reads as a skyline.
+ * `onMiss` fires when a click lands on the canvas but not on a block,
+ * which lets whatever sits behind the canvas (the hero's disc) still
+ * respond to it.
  */
-const HeroCanvas = ({ progressRef, revealRef }) => (
+const HeroCanvas = ({ progressRef, revealRef, fallen = false, onMiss, className = 'fill-parent' }) => (
   <Stage
-    className="fill-parent"
-    camera={{ position: [0, 1.4, 13], fov: 34, near: 0.1, far: 60 }}
+    className={className}
+    orthographic
+    shadows
+    interactive
+    camera={CAMERA}
+    onPointerMissed={onMiss}
   >
-    <ShardField progressRef={progressRef} revealRef={revealRef} />
+    <Maquette progressRef={progressRef} revealRef={revealRef} fallen={fallen} />
   </Stage>
 );
 

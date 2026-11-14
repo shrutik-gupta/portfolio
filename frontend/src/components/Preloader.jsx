@@ -96,7 +96,7 @@ const Preloader = ({ onComplete }) => {
 
       // Minimum on-screen time keeps the sequence from flashing on a
       // warm cache; the 6s ceiling keeps a stalled asset from blocking.
-      const floor = new Promise((res) => gsap.delayedCall(1.5, res));
+      const floor = new Promise((res) => gsap.delayedCall(1.1, res));
       Promise.all([ready, floor]).then(finish);
       const bail = gsap.delayedCall(6, finish);
 
@@ -108,34 +108,37 @@ const Preloader = ({ onComplete }) => {
   return (
     <div
       ref={root}
-      className="fixed inset-0 z-[100] flex flex-col justify-between bg-bg-primary px-gutter py-[max(1.5rem,4vh)]"
+      className="fixed inset-0 z-[100] flex flex-col justify-between overflow-hidden bg-bg-primary px-gutter py-[max(1.5rem,4vh)]"
       style={{ clipPath: 'inset(0% 0% 0% 0%)' }}
     >
-      <div className="flex items-start justify-between">
-        <p
-          data-pre-meta
-          className="text-fluid--2 uppercase tracking-[0.28em] text-text-muted"
-        >
+      {/* The disc comes up over the horizon as things load. */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute left-1/2 top-full aspect-square w-[min(70vw,34rem)] rounded-full bg-disc"
+        style={{
+          transform: `translate(-50%, ${-(count / 100) * 62}%)`,
+          transition: 'transform 0.25s linear',
+        }}
+      />
+
+      <div className="relative flex items-start justify-between">
+        <p data-pre-meta className="label text-text-secondary">
           Shrutik Gupta
         </p>
-        <p
-          data-pre-meta
-          className="text-fluid--2 uppercase tracking-[0.28em] text-text-muted"
-        >
+        <p data-pre-meta className="label text-text-secondary">
           Portfolio
         </p>
       </div>
 
-      <div data-pre-meta className="mx-auto max-w-measure text-center">
-        <p className="serif-italic text-fluid-3 text-text-secondary">
-          Building for the web,
-          <br />
-          <span className="text-accent-primary">one considered detail at a time.</span>
+      <div data-pre-meta className="relative">
+        <p className="display text-fluid-6 text-text-primary">
+          Setting <span className="display-i text-accent-primary">things</span> up
         </p>
+        <p className="hand mt-3 text-text-secondary">one moment…</p>
       </div>
 
-      <div>
-        <div className="mb-4 h-px w-full overflow-hidden bg-border-default">
+      <div className="relative">
+        <div className="mb-4 h-[2px] w-full overflow-hidden bg-text-primary/20">
           <div
             data-pre-bar
             className="h-full w-full origin-left bg-accent-primary"
@@ -143,13 +146,10 @@ const Preloader = ({ onComplete }) => {
           />
         </div>
         <div className="flex items-end justify-between">
-          <span
-            data-pre-meta
-            className="text-fluid--2 uppercase tracking-[0.28em] text-text-muted"
-          >
+          <span data-pre-meta className="label text-text-secondary">
             Loading
           </span>
-          <span className="text-fluid-5 font-light leading-none tabular-nums text-text-primary">
+          <span className="display text-fluid-6 tabular-nums leading-none text-text-primary">
             {String(count).padStart(3, '0')}
           </span>
         </div>

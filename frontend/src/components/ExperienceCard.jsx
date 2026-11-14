@@ -1,43 +1,59 @@
 import React from 'react';
 
 /**
- * One row of the experience ledger.
+ * One stop on the path.
  *
- * Hover state is reported upward rather than handled locally, because a
- * single shared preview plate follows the cursor across all rows —
- * mounting one plate per row would mean N elements tracking the pointer.
+ * Stops alternate sides of the route line on wide screens. The logo sits
+ * on the line itself, like a rubber stamp at a checkpoint.
  */
-const ExperienceCard = ({ item, index, onHover, onLeave }) => {
-  const { title, company, duration, description } = item;
+const ExperienceCard = ({ item, index }) => {
+  const { title, company, duration, description, highlights, logo } = item;
+  const [org, branch] = company.split('|').map((s) => s.trim());
+  const right = index % 2 === 1;
 
   return (
-    <li
-      data-exp-row
-      className="group relative border-t border-border-default"
-      onPointerEnter={() => onHover?.(index)}
-      onPointerLeave={() => onLeave?.()}
-    >
-      {/* Wash that wipes in from the left on hover. */}
+    <li className="relative grid md:grid-cols-2 md:gap-x-28">
+      {/* Stamp on the line */}
       <span
+        data-reveal="fade"
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 origin-left scale-x-0 bg-bg-hover/50 transition-transform duration-700 ease-out-expo group-hover:scale-x-100"
-      />
+        className="paper absolute left-0 top-0 grid h-14 w-14 place-items-center rounded-full border-2 border-dashed border-text-primary/60 p-2 shadow-print md:left-1/2 md:h-[4.5rem] md:w-[4.5rem] md:-translate-x-1/2"
+      >
+        {logo ? (
+          <img src={logo} alt="" loading="lazy" className="h-full w-full rounded-full object-contain" />
+        ) : (
+          <span className="font-display text-fluid-1 font-semibold">
+            {org.split(/\s+/).map((w) => w[0]).join('').slice(0, 3)}
+          </span>
+        )}
+      </span>
 
-      <div className="relative grid gap-4 py-8 md:grid-cols-[auto_1fr_1.1fr] md:items-baseline md:gap-10 md:py-10">
-        <span className="text-fluid--2 uppercase tracking-[0.22em] text-text-muted md:w-[16ch]">
+      <div
+        data-reveal={right ? 'right' : 'left'}
+        className={`flex flex-col gap-3 pb-16 pl-20 md:pb-24 md:pl-0 ${
+          right ? 'md:col-start-2' : 'md:col-start-1 md:items-end md:text-right'
+        }`}
+      >
+        <p className="label w-fit border-2 border-accent-primary px-2 py-1 text-accent-primary -rotate-1">
           {duration}
-        </span>
-
-        <div className="flex flex-col gap-1">
-          <h3 className="text-fluid-2 text-text-primary transition-transform duration-700 ease-out-expo md:group-hover:translate-x-2">
-            {company}
-          </h3>
-          <p className="text-fluid--1 text-accent-primary">{title}</p>
-        </div>
-
-        <p className="measure text-fluid--1 leading-relaxed text-text-secondary">
-          {description}
         </p>
+        <h3 className="text-fluid-4 text-text-primary">{org}</h3>
+        <p className="display-i text-fluid-2 leading-tight text-text-secondary">
+          {title}
+          {branch && <span className="text-text-muted"> · {branch}</span>}
+        </p>
+        <p className="measure text-fluid-0 text-text-secondary">{description}</p>
+        {highlights?.length > 0 && (
+          // Always left-aligned: a ragged-left list is hard to scan.
+          <ul className="measure mt-1 flex flex-col border-t border-text-primary/25 text-left text-fluid--1 text-text-secondary">
+            {highlights.map((h) => (
+              <li key={h} className="flex gap-3 border-b border-text-primary/15 py-2.5">
+                <span className="mt-[0.55em] block h-1.5 w-1.5 shrink-0 rotate-45 bg-accent-primary" aria-hidden="true" />
+                <span>{h}</span>
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
     </li>
   );

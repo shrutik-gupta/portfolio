@@ -1,127 +1,141 @@
 import React, { Suspense, lazy, useRef } from 'react';
-import { ArrowDownRight, ArrowUpRight } from 'lucide-react';
+import { Check } from 'lucide-react';
 import { useGSAP } from '@gsap/react';
-import { gsap, SplitText, prefersReducedMotion } from '../lib/motion';
+import { gsap, prefersReducedMotion } from '../lib/motion';
 import { useAppReady } from '../lib/ready';
-import { useSmoothScroll } from '../lib/SmoothScroll';
-import Magnetic from '../components/Magnetic';
+import { useSectionNav } from '../lib/sectionNav';
+import { ROUTES, useAudience } from '../lib/audience';
+import { useTheme } from '../contexts/ThemeContext';
+import { easeThemeChange } from '../lib/themeSwitch';
+import { CONTACT } from '../helper/ProfileHelper';
+import { Arrow, Registration } from '../components/Doodles';
 
 const HeroCanvas = lazy(() => import('../three/HeroCanvas'));
 
-const SOCIALS = [
-  { label: 'GitHub', href: 'https://github.com/shrutik-gupta' },
-  { label: 'LinkedIn', href: 'https://www.linkedin.com/in/shrutik-gupta' },
-  { label: 'Email', href: 'mailto:shrutikgupta07@gmail.com' },
-];
+const DOOR_TILT = ['-rotate-2', 'rotate-1', '-rotate-1'];
 
+/**
+ * The cover.
+ *
+ * One sentence says who, what and what kind. Beside it sits the maquette
+ * in front of the disc — the sun by day, the moon after dark. Tapping the
+ * disc changes the theme. Under the sentence, three doors offer a shorter
+ * route through the page; walking past them is fine too.
+ */
 const Hero = () => {
   const root = useRef(null);
-  const headlineRef = useRef(null);
+  const discRef = useRef(null);
   const { ready } = useAppReady();
-  const { scrollTo } = useSmoothScroll();
+  const goToSection = useSectionNav();
+  const { audience, setAudience } = useAudience();
+  const { isDark, toggleTheme } = useTheme();
 
-  // Written every frame by the exit ScrollTrigger, read by the shader.
+  // Written by GSAP, read by the 3D scene every frame.
   // Refs rather than state: the canvas must never re-render React.
   const progressRef = useRef(0);
   const revealRef = useRef(0);
+
+  const switchTheme = () => {
+    easeThemeChange();
+    toggleTheme();
+    if (prefersReducedMotion()) return;
+    // The disc dips below the horizon and comes back as the other one.
+    gsap.fromTo(
+      discRef.current,
+      { yPercent: 46, scale: 0.86 },
+      { yPercent: 0, scale: 1, duration: 1.1, ease: 'sweep', overwrite: 'auto' },
+    );
+  };
+
+  // A click on the canvas that misses every block still counts as a tap
+  // on the disc, if that is what was under the pointer.
+  const onCanvasMiss = (e) => {
+    const disc = discRef.current?.getBoundingClientRect();
+    if (!disc) return;
+    const r = disc.width / 2;
+    const dx = e.clientX - (disc.left + r);
+    const dy = e.clientY - (disc.top + r);
+    if (dx * dx + dy * dy <= r * r) switchTheme();
+  };
+
+  const openDoor = (id) => {
+    setAudience(id);
+    goToSection(ROUTES[id].stops.find((s) => s.id !== 'hero').id);
+  };
 
   useGSAP(
     () => {
       const el = root.current;
       if (!el) return undefined;
 
+      gsap.set('[data-anim]', { visibility: 'visible' });
+
       if (prefersReducedMotion()) {
-        gsap.set('[data-anim]', { visibility: 'visible' });
         revealRef.current = 1;
         return undefined;
       }
 
-      const split = SplitText.create(headlineRef.current, {
-        type: 'lines,chars',
-        mask: 'lines',
-        autoSplit: true,
-        onSplit(self) {
-          gsap.set(headlineRef.current, { visibility: 'visible' });
+      // Held until the curtain lifts — otherwise the entrance plays out
+      // of sight behind the preloader and is over on reveal.
+      if (!ready) {
+        gsap.set('[data-hero-line]', { yPercent: 115 });
+        gsap.set('[data-hero-fade], [data-hero-door]', { autoAlpha: 0 });
+        gsap.set(discRef.current, { yPercent: 60, scale: 0.7, autoAlpha: 0 });
+        return undefined;
+      }
 
-          // Held until the curtain lifts — otherwise the entrance plays
-          // out of sight behind the preloader and is over on reveal.
-          if (!ready) {
-            gsap.set(self.chars, { yPercent: 110 });
-            return undefined;
-          }
+      const tl = gsap.timeline({ defaults: { ease: 'sweep' } });
+      tl.fromTo(
+        '[data-hero-line]',
+        { yPercent: 115 },
+        { yPercent: 0, duration: 1.15, stagger: 0.1 },
+      )
+        .fromTo(
+          discRef.current,
+          { yPercent: 60, scale: 0.7, autoAlpha: 0 },
+          { yPercent: 0, scale: 1, autoAlpha: 1, duration: 1.5 },
+          0.1,
+        )
+        // Drives the maquette's pieces dropping in, one by one.
+        .to(revealRef, { current: 1, duration: 1.7, ease: 'none' }, 0.35)
+        .fromTo(
+          '[data-hero-fade]',
+          { y: 20, autoAlpha: 0 },
+          { y: 0, autoAlpha: 1, duration: 0.9, stagger: 0.07 },
+          0.5,
+        )
+        .fromTo(
+          '[data-hero-door]',
+          { y: 40, rotate: -8, autoAlpha: 0 },
+          {
+            y: 0,
+            rotate: 0,
+            autoAlpha: 1,
+            duration: 0.9,
+            stagger: 0.09,
+            ease: 'back.out(1.6)',
+            clearProps: 'transform',
+          },
+          0.85,
+        );
 
-          const tl = gsap.timeline({ defaults: { ease: 'sweep' } });
-
-          tl.set('[data-anim]', { visibility: 'visible' })
-            .from(self.chars, {
-              yPercent: 110,
-              duration: 1.25,
-              stagger: { each: 0.022, from: 'start' },
-            })
-            .from(
-              '[data-hero-meta]',
-              { yPercent: 100, autoAlpha: 0, duration: 0.9, stagger: 0.06 },
-              0.35,
-            )
-            .from(
-              '[data-hero-sub] > *',
-              { y: 24, autoAlpha: 0, duration: 1, stagger: 0.08 },
-              0.55,
-            )
-            .from(
-              '[data-hero-cta]',
-              { y: 28, autoAlpha: 0, duration: 0.9, stagger: 0.08 },
-              0.7,
-            )
-            // Drives the shader's centre-out entrance wipe.
-            .to(revealRef, { current: 1, duration: 1.8, ease: 'power2.out' }, 0.1)
-            .fromTo(
-              '[data-hero-rule]',
-              { scaleX: 0 },
-              { scaleX: 1, duration: 1.4, ease: 'cut' },
-              0.3,
-            );
-
-          return tl;
-        },
-      });
-
-      // --- Exit: hold the hero, let the next section travel over it ----
-      //
-      // pinSpacing is off on purpose. With spacing on, the pin inserts a
-      // viewport-tall spacer, so the hero finished its exit and then sat
-      // there empty for a full screen before About arrived — a dead zone
-      // that reads as a hard cut between sections. Without spacing the
-      // hero stays fixed as a receding backdrop and About slides up over
-      // it, so the two sections are on screen together throughout.
+      // Leaving: the pieces drift apart and the disc sinks a little.
+      // Nothing is pinned — the page keeps scrolling at its own speed.
       const exit = gsap.timeline({
         scrollTrigger: {
           trigger: el,
           start: 'top top',
-          end: '+=100%',
-          pin: true,
-          pinSpacing: false,
-          anticipatePin: 1,
+          end: 'bottom top',
           scrub: 0.6,
-          invalidateOnRefresh: true,
           onUpdate: (self) => {
             progressRef.current = self.progress;
           },
         },
       });
-
-      exit
-        // The whole content block recedes as one, so nothing (like the
-        // hairline rule) is left floating over an empty stage.
-        .to(
-          '[data-hero-content]',
-          { yPercent: -18, scale: 0.97, autoAlpha: 0, ease: 'power1.in' },
-          0,
-        )
-        .to(headlineRef.current, { yPercent: -22, ease: 'none' }, 0);
+      exit.to('[data-hero-disc-wrap]', { yPercent: 22, ease: 'none' }, 0);
 
       return () => {
-        split.revert();
+        tl.kill();
         exit.scrollTrigger?.kill();
         exit.kill();
       };
@@ -129,193 +143,174 @@ const Hero = () => {
     { scope: root, dependencies: [ready], revertOnUpdate: true },
   );
 
-  // Looping scroll cue, independent of the entrance timeline.
-  useGSAP(
-    () => {
-      if (prefersReducedMotion()) return;
-      gsap.fromTo(
-        '[data-scroll-cue-line]',
-        { scaleY: 0 },
-        {
-          scaleY: 1,
-          duration: 1.4,
-          repeat: -1,
-          repeatDelay: 0.2,
-          ease: 'power2.inOut',
-          transformOrigin: 'top',
-        },
-      );
-    },
-    { scope: root },
-  );
-
   return (
     <section
       id="hero"
       ref={root}
-      className="relative min-h-[100svh] w-full overflow-hidden bg-bg-primary"
+      className="relative flex min-h-[100svh] w-full flex-col overflow-hidden px-gutter pb-8 pt-20 lg:pt-10"
     >
-      {/* --- WebGL substrate ------------------------------------- */}
-      <div className="fill-parent z-0">
-        <Suspense fallback={null}>
-          <HeroCanvas progressRef={progressRef} revealRef={revealRef} />
-        </Suspense>
-        <div className="vignette" />
-        {/* Horizon wash: seats the field on a ground plane and hides the
-            canvas edge where the shards fade out. */}
-        <div
-          className="pointer-events-none absolute inset-x-0 bottom-0 h-1/4"
-          style={{
-            background:
-              'linear-gradient(to top, rgb(var(--color-bg-primary)) 0%, transparent 100%)',
-          }}
-        />
+      {/* Printer's marks: this is the cover sheet. */}
+      <span className="crop left-3 top-3 hidden lg:block" aria-hidden="true" />
+      <span className="crop bottom-3 left-3 hidden lg:block" aria-hidden="true" />
+      <span className="crop bottom-3 right-3 hidden lg:block" aria-hidden="true" />
+
+      {/* --- Masthead --- */}
+      <div className="flex flex-wrap items-baseline justify-between gap-x-8 gap-y-2 pr-0 lg:pr-56">
+        <p data-hero-fade data-anim className="label text-text-secondary">
+          Shrutik Gupta <span className="mx-1 text-accent-primary">/</span> Software developer
+        </p>
+        <p data-hero-fade data-anim className="label flex items-center gap-2 text-text-secondary">
+          <span className="relative flex h-2 w-2" aria-hidden="true">
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-success opacity-60" />
+            <span className="relative inline-flex h-2 w-2 rounded-full bg-success" />
+          </span>
+          Open to work <span className="mx-1 text-accent-primary">/</span> Mumbai, India
+        </p>
       </div>
 
-      {/* --- Content --------------------------------------------- */}
-      <div
-        data-hero-content
-        className="relative z-10 flex min-h-[100svh] flex-col justify-between px-gutter pb-8 pt-28 sm:pt-32"
-      >
-        {/* Top meta */}
-        <div className="flex items-start justify-between gap-6">
-          <div className="line-mask">
-            <p
-              data-hero-meta
-              data-anim
-              className="text-fluid--2 uppercase tracking-[0.28em] text-text-muted"
-            >
-              Mumbai, India
-              <span className="mx-2 text-accent-primary">·</span>
-              19.07° N
-            </p>
-          </div>
-          <div className="line-mask">
-            <p
-              data-hero-meta
-              data-anim
-              className="flex items-center gap-2 text-fluid--2 uppercase tracking-[0.28em] text-text-muted"
-            >
-              <span className="relative flex h-1.5 w-1.5">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-success opacity-75" />
-                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-success" />
-              </span>
-              Open to work
-            </p>
-          </div>
-        </div>
+      {/* --- The sentence + the object --- */}
+      <div className="relative flex flex-1 flex-col justify-center py-8 lg:py-10">
+        <h1
+          data-anim
+          className="display relative z-10 w-fit text-[clamp(2.6rem,11.4vw,6rem)] text-text-primary lg:text-[clamp(4rem,7.6vw,9.2rem)]"
+        >
+          <span className="line-mask">
+            <span data-hero-line className="block">
+              Shrutik builds
+            </span>
+          </span>
+          <span className="line-mask">
+            <span data-hero-line className="block">
+              <span className="marker">websites &amp; apps,</span>
+            </span>
+          </span>
+          <span className="line-mask">
+            <span data-hero-line className="display-i block text-accent-primary">
+              start to finish.
+            </span>
+          </span>
+        </h1>
 
-        {/* Headline */}
-        <div className="flex flex-1 flex-col justify-center py-10">
-          <h1
-            ref={headlineRef}
+        {/* The object. On large screens it stands to the right of the
+            sentence; on small ones it gets its own row underneath. */}
+        <div className="relative mx-auto mt-6 aspect-[5/4] w-full max-w-md lg:absolute lg:-right-[2%] lg:top-1/2 lg:mx-0 lg:mt-0 lg:aspect-auto lg:h-[min(92%,44rem)] lg:w-[46%] lg:max-w-none lg:-translate-y-1/2">
+          <div data-hero-disc-wrap className="fill-parent grid place-items-center">
+            <button
+              ref={discRef}
+              type="button"
+              onClick={switchTheme}
+              data-anim
+              aria-label={isDark ? 'Switch to the light theme' : 'Switch to the dark theme'}
+              data-cursor-label={isDark ? 'Sunrise' : 'Sunset'}
+              className="aspect-square w-[62%] rounded-full bg-disc lg:w-[min(64%,28rem)]"
+            />
+          </div>
+
+          <Suspense fallback={null}>
+            {/* The mask fades the table's shadow out before the canvas edge. */}
+            <HeroCanvas
+              progressRef={progressRef}
+              revealRef={revealRef}
+              onMiss={onCanvasMiss}
+              className="fill-parent [mask-image:linear-gradient(to_right,transparent,#000_10%,#000_80%,transparent)]"
+            />
+          </Suspense>
+
+          <p
+            data-hero-fade
             data-anim
-            className="display max-w-[16ch] text-text-primary"
+            className="hand pointer-events-none absolute right-[4%] top-[2%] flex items-end gap-1 text-text-secondary lg:right-[10%] lg:top-[6%]"
           >
-            Full–stack developer{' '}
-            <span className="serif-italic text-accent-primary">&amp; builder</span>
-          </h1>
-
-          <div
-            data-hero-rule
-            className="my-8 h-px w-full origin-left bg-border-default sm:my-10"
-          />
-
-          <div
-            data-hero-sub
-            className="grid gap-8 sm:grid-cols-[1fr_auto] sm:items-end"
-          >
-            <p data-anim className="measure text-fluid-0 text-text-secondary">
-              I design and build web applications end to end — from the database
-              schema to the last easing curve. Currently shipping AI-assisted
-              products on the MERN stack.
-            </p>
-
-            <ul
-              data-anim
-              className="flex flex-wrap gap-x-5 gap-y-2 text-fluid--2 uppercase tracking-[0.2em] text-text-muted sm:justify-end"
-            >
-              {['React', 'Node', 'MongoDB', 'Express', 'GSAP', 'WebGL'].map((t) => (
-                <li key={t}>{t}</li>
-              ))}
-            </ul>
-          </div>
+            <span className="max-w-[7.5rem] text-right">
+              tap the {isDark ? 'moon' : 'sun'},<br />poke the blocks
+            </span>
+            <Arrow className="mb-1 h-7 w-9 -scale-x-100 rotate-[20deg]" />
+          </p>
         </div>
 
-        {/* CTAs + footer row */}
-        <div className="flex flex-col gap-8">
-          <div className="flex flex-wrap items-center gap-4">
-            <Magnetic strength={0.4}>
-              <button
-                data-hero-cta
-                data-anim
-                data-cursor="link"
-                type="button"
-                onClick={() => scrollTo('#contact')}
-                className="group relative flex items-center gap-3 overflow-hidden rounded-full border border-accent-primary px-7 py-3.5 text-fluid--1 font-medium uppercase tracking-[0.16em] text-accent-primary transition-colors duration-500 ease-out-expo hover:text-text-inverse"
-              >
-                <span
-                  className="absolute inset-0 -z-10 origin-bottom scale-y-0 bg-accent-primary transition-transform duration-500 ease-out-expo group-hover:scale-y-100"
-                  aria-hidden="true"
-                />
-                <span data-magnetic-inner className="flex items-center gap-3">
-                  Start a conversation
-                  <ArrowDownRight className="h-4 w-4" />
-                </span>
-              </button>
-            </Magnetic>
+        <p
+          data-hero-fade
+          data-anim
+          className="relative z-10 mt-7 max-w-[34ch] text-fluid-1 leading-snug text-text-secondary lg:mt-9"
+        >
+          I’m a software developer from Mumbai. I build AI-powered products
+          and the back ends that keep them running.
+        </p>
 
-            <Magnetic strength={0.4}>
-              <a
-                data-hero-cta
-                data-anim
-                data-cursor="link"
-                href="/resume.pdf"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-3 px-2 py-3.5 text-fluid--1 uppercase tracking-[0.16em] text-text-secondary transition-colors duration-500 hover:text-text-primary"
-              >
-                <span data-magnetic-inner className="link-sweep">
-                  Résumé
-                </span>
-                <ArrowUpRight className="h-4 w-4" />
-              </a>
-            </Magnetic>
-          </div>
-
-          <div
-            data-hero-foot
-            className="flex items-end justify-between gap-6 border-t border-border-default pr-0 pt-6 sm:pr-20"
-          >
-            <div className="flex items-center gap-3">
-              <span className="block h-8 w-px overflow-hidden bg-border-default">
-                <span
-                  data-scroll-cue-line
-                  className="block h-full w-full origin-top bg-accent-primary"
-                />
-              </span>
-              <span className="text-fluid--2 uppercase tracking-[0.28em] text-text-muted">
-                Scroll
-              </span>
-            </div>
-
-            <ul className="flex flex-wrap items-center gap-x-6 gap-y-2">
-              {SOCIALS.map((s) => (
-                <li key={s.label}>
-                  <a
-                    href={s.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    data-cursor="link"
-                    className="link-sweep text-fluid--2 uppercase tracking-[0.2em] text-text-secondary transition-colors hover:text-accent-primary"
+        {/* --- Three doors --- */}
+        <div className="relative z-10 mt-9 w-full sm:w-fit lg:mt-12">
+          <p data-hero-fade data-anim className="hand mb-3 text-accent-secondary">
+            What brings you here?
+          </p>
+          <ul className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:gap-4">
+            {Object.entries(ROUTES).map(([id, r], i) => {
+              const selected = audience === id;
+              return (
+                <li key={id} data-hero-door data-anim>
+                  <button
+                    type="button"
+                    onClick={() => openDoor(id)}
+                    aria-pressed={selected}
+                    className={`paper group relative flex w-full items-center gap-3 border-2 border-text-primary px-4 py-3 text-left shadow-hard transition-transform duration-300 ease-spring hover:-translate-y-1 hover:rotate-0 active:translate-y-0.5 sm:w-auto ${DOOR_TILT[i]}`}
                   >
-                    {s.label}
-                  </a>
+                    <span
+                      className={`label grid h-7 w-7 shrink-0 place-items-center rounded-full border-2 border-text-primary transition-colors ${
+                        selected ? 'bg-accent-primary text-text-inverse' : 'group-hover:bg-highlight'
+                      }`}
+                    >
+                      {selected ? <Check className="h-3.5 w-3.5" aria-hidden="true" /> : i + 1}
+                    </span>
+                    <span>
+                      <span className="block font-display text-fluid-1 font-semibold leading-tight">
+                        {r.door}
+                      </span>
+                      <span className="block text-fluid--2 text-text-secondary">{r.hint}</span>
+                    </span>
+                  </button>
                 </li>
-              ))}
-            </ul>
-          </div>
+              );
+            })}
+          </ul>
         </div>
+      </div>
+
+      {/* --- Foot of the cover --- */}
+      <div
+        data-hero-fade
+        data-anim
+        className="relative z-10 flex flex-wrap items-end justify-between gap-x-8 gap-y-4 border-t border-text-primary/25 pt-5"
+      >
+        <button
+          type="button"
+          onClick={() => goToSection('about')}
+          className="hand flex items-center gap-2 text-text-secondary transition-colors hover:text-accent-primary"
+        >
+          or just scroll
+          <Arrow className="h-6 w-8 animate-nudge rotate-[35deg]" />
+        </button>
+
+        <ul className="flex flex-wrap items-center gap-x-6 gap-y-2 text-fluid--1">
+          {CONTACT.channels.map((c) => (
+            <li key={c.label}>
+              <a href={c.href} target="_blank" rel="noopener noreferrer" className="link-ink">
+                {c.label}
+              </a>
+            </li>
+          ))}
+          <li>
+            <a
+              href={CONTACT.resume}
+              target="_blank"
+              rel="noopener noreferrer"
+              data-cursor-label="PDF"
+              className="link-ink font-semibold"
+            >
+              Résumé ↗
+            </a>
+          </li>
+        </ul>
+
+        <Registration className="hidden h-6 w-6 text-text-muted lg:block" />
       </div>
     </section>
   );

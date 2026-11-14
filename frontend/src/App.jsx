@@ -9,6 +9,7 @@ import { ThemeProvider } from './contexts/ThemeContext';
 import { ReadyProvider, useAppReady } from './lib/ready';
 import { SmoothScrollProvider, useSmoothScroll } from './lib/SmoothScroll';
 import { ScrollTrigger } from './lib/motion';
+import { AudienceProvider } from './lib/audience';
 
 import Home from './pages/Home';
 import NotFound from './pages/NotFound';
@@ -80,7 +81,9 @@ function App() {
     <ThemeProvider>
       <ReadyProvider>
         <SmoothScrollProvider>
-          <AppShell />
+          <AudienceProvider>
+            <AppShell />
+          </AudienceProvider>
         </SmoothScrollProvider>
       </ReadyProvider>
     </ThemeProvider>

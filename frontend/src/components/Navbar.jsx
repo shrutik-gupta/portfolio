@@ -1,76 +1,83 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
+import { SlidersHorizontal } from 'lucide-react';
 import { useGSAP } from '@gsap/react';
-import { gsap, ScrollTrigger, prefersReducedMotion } from '../lib/motion';
+import { gsap, prefersReducedMotion } from '../lib/motion';
 import { useSmoothScroll } from '../lib/SmoothScroll';
-import Magnetic from './Magnetic';
+import { useSectionNav } from '../lib/sectionNav';
+import { PAGE_ORDER } from '../lib/audience';
+import ThemeDisc from './ThemeDisc';
+import RouteSlip from './RouteSlip';
 import logo from '../assets/logo.png';
 
 const LINKS = [
-  { label: 'About', section: 'about', path: '/about' },
-  { label: 'Stack', section: 'capabilities', path: '/about' },
-  { label: 'Work', section: 'projects', path: '/projects' },
-  { label: 'Path', section: 'experience', path: '/experience' },
-  { label: 'Contact', section: 'contact', path: '/contact' },
+  { label: 'About', section: 'about' },
+  { label: 'Work', section: 'projects' },
+  { label: 'Services', section: 'services' },
+  { label: 'Skills', section: 'capabilities' },
+  { label: 'Path', section: 'experience' },
+  { label: 'Contact', section: 'contact' },
 ];
 
+/**
+ * Which section is under the reader's eye. One observer, re-attached per
+ * route because the sections only exist on the home document.
+ */
+const useActiveSection = (pathname) => {
+  const [active, setActive] = useState(null);
+
+  useEffect(() => {
+    const els = PAGE_ORDER.map((id) => document.getElementById(id)).filter(Boolean);
+    if (!els.length) {
+      setActive(null);
+      return undefined;
+    }
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) setActive(entry.target.id);
+        });
+      },
+      // A thin band across the middle of the viewport.
+      { rootMargin: '-45% 0px -50% 0px' },
+    );
+    els.forEach((el) => io.observe(el));
+    return () => io.disconnect();
+  }, [pathname]);
+
+  return active;
+};
+
+/**
+ * Navigation, as part of the object rather than a bar on top of it.
+ *
+ *  - Desktop: a book spine down the left edge. Sections are index tabs;
+ *    the one you are reading sticks out.
+ *  - Mobile: a dock along the bottom with Home, Index and the theme disc.
+ *    Index opens a contents page.
+ *  - Everywhere: the route slip (top right) for visitors who want a
+ *    shorter path through the page.
+ */
 const Navbar = () => {
-  const root = useRef(null);
   const menuRef = useRef(null);
   const [open, setOpen] = useState(false);
-  const location = useLocation();
-  const navigate = useNavigate();
+  const { pathname } = useLocation();
   const { scrollTo } = useSmoothScroll();
+  const goToSection = useSectionNav();
+  const active = useActiveSection(pathname);
 
-  /**
-   * Section links resolve to a scroll on the home page and a navigation
-   * everywhere else. The scroll is deferred to the next frame after a
-   * route change so the target section exists before we measure it.
-   */
-  const goTo = (link) => {
+  const goTo = (section) => {
     setOpen(false);
-    if (location.pathname === '/' || location.pathname === link.path) {
-      const el = document.getElementById(link.section);
-      if (el) {
-        scrollTo(el, { offset: 0 });
-        return;
-      }
-    }
-    navigate('/', { state: { section: link.section } });
+    goToSection(section);
   };
 
-  // Hide the bar on the way down, bring it back on the way up.
-  useGSAP(
-    () => {
-      const el = root.current;
-      if (!el || prefersReducedMotion()) return undefined;
+  // The monogram always means "back to the start".
+  const goHome = () => {
+    setOpen(false);
+    if (document.getElementById('hero')) scrollTo(0, { duration: 1.2 });
+  };
 
-      const show = gsap.quickTo(el, 'yPercent', { duration: 0.5, ease: 'sweep' });
-      let hidden = false;
-
-      const st = ScrollTrigger.create({
-        start: 0,
-        end: 'max',
-        onUpdate: (self) => {
-          if (open) return;
-          const goingDown = self.direction === 1;
-          const past = self.scroll() > 120;
-          if (goingDown && past && !hidden) {
-            hidden = true;
-            show(-140);
-          } else if ((!goingDown || !past) && hidden) {
-            hidden = false;
-            show(0);
-          }
-        },
-      });
-
-      return () => st.kill();
-    },
-    { scope: root, dependencies: [open] },
-  );
-
-  // Full-screen menu on small viewports.
+  // Contents page (mobile).
   useGSAP(
     () => {
       const panel = menuRef.current;
@@ -78,6 +85,7 @@ const Navbar = () => {
 
       if (prefersReducedMotion()) {
         gsap.set(panel, { autoAlpha: open ? 1 : 0, clipPath: 'none' });
+        gsap.set(panel, { pointerEvents: open ? 'auto' : 'none' });
         return;
       }
 
@@ -88,29 +96,25 @@ const Navbar = () => {
           .set(panel, { autoAlpha: 1 })
           .fromTo(
             panel,
-            { clipPath: 'inset(0% 0% 100% 0%)' },
-            { clipPath: 'inset(0% 0% 0% 0%)', duration: 0.8, ease: 'cut' },
+            { clipPath: 'inset(100% 0% 0% 0%)' },
+            { clipPath: 'inset(0% 0% 0% 0%)', duration: 0.7, ease: 'cut' },
           )
           .from(
             '[data-menu-item]',
-            { yPercent: 110, autoAlpha: 0, duration: 0.7, stagger: 0.06, ease: 'sweep' },
-            '-=0.45',
+            { yPercent: 110, duration: 0.6, stagger: 0.05, ease: 'sweep' },
+            '-=0.4',
           );
       } else {
         gsap
           .timeline()
-          .to(panel, {
-            clipPath: 'inset(0% 0% 100% 0%)',
-            duration: 0.55,
-            ease: 'cut',
-          })
+          .to(panel, { clipPath: 'inset(100% 0% 0% 0%)', duration: 0.5, ease: 'cut' })
           .set(panel, { autoAlpha: 0, pointerEvents: 'none' });
       }
     },
     { dependencies: [open] },
   );
 
-  // The menu locks the page; Escape closes it.
+  // Escape closes the contents page.
   useEffect(() => {
     const onKey = (e) => {
       if (e.key === 'Escape') setOpen(false);
@@ -121,99 +125,148 @@ const Navbar = () => {
 
   return (
     <>
-      <header
-        ref={root}
-        className="fixed inset-x-0 top-0 z-[70] will-change-transform"
-      >
-        <div className="flex items-center justify-between px-gutter py-5">
-          <Magnetic strength={0.4}>
-            <Link
-              to="/"
-              data-cursor="link"
-              aria-label="Home"
-              className="flex items-center gap-3"
-            >
-              <img src={logo} alt="" className="h-6 w-6 object-contain" />
-              <span className="hidden text-fluid--2 uppercase tracking-[0.28em] text-text-secondary sm:block">
-                Shrutik Gupta
-              </span>
-            </Link>
-          </Magnetic>
+      {/* ---------- Spine (desktop) ---------- */}
+      <header className="fixed inset-y-0 left-0 z-[70] hidden w-rail flex-col items-center justify-between border-r border-text-primary/15 bg-bg-secondary py-4 lg:flex">
+        <Link
+          to="/"
+          onClick={goHome}
+          aria-label="Shrutik Gupta — back to the start"
+          data-cursor-label="Top"
+          className="grid h-10 w-10 place-items-center transition-transform duration-500 ease-spring hover:-rotate-12 hover:scale-110"
+        >
+          <img src={logo} alt="" className="h-7 w-7 object-contain" />
+        </Link>
 
-          <nav className="hidden items-center gap-8 md:flex">
-            {LINKS.map((link) => (
-              <button
-                key={link.label}
-                type="button"
-                data-cursor="link"
-                onClick={() => goTo(link)}
-                className="link-sweep text-fluid--2 uppercase tracking-[0.2em] text-text-secondary transition-colors duration-500 hover:text-text-primary"
-              >
-                {link.label}
-              </button>
-            ))}
-            <Link
-              to="/preferences"
-              data-cursor="link"
-              className="link-sweep text-fluid--2 uppercase tracking-[0.2em] text-text-muted transition-colors duration-500 hover:text-text-primary"
-            >
-              Prefs
-            </Link>
-          </nav>
+        <nav aria-label="Sections" className="no-scrollbar min-h-0 w-full overflow-y-auto">
+          <ul className="flex flex-col items-stretch">
+            {LINKS.map((link) => {
+              const isActive = active === link.section;
+              return (
+                <li key={link.section}>
+                  <button
+                    type="button"
+                    onClick={() => goTo(link.section)}
+                    aria-current={isActive ? 'true' : undefined}
+                    className={`group relative flex w-full justify-center py-3 transition-colors duration-300 ${
+                      isActive ? 'text-text-inverse' : 'text-text-secondary hover:text-text-primary'
+                    }`}
+                  >
+                    {/* The tab itself: slides out past the spine when active. */}
+                    <span
+                      aria-hidden="true"
+                      className={`absolute inset-y-0.5 left-0 origin-left bg-accent-primary transition-transform duration-500 ease-out-expo ${
+                        isActive ? 'scale-x-100' : 'scale-x-0'
+                      }`}
+                      style={{ width: 'calc(100% + 0.5rem)', clipPath: 'polygon(0 0, 88% 0, 100% 14%, 100% 86%, 88% 100%, 0 100%)' }}
+                    />
+                    <span className="label vertical relative rotate-180 transition-transform duration-300 group-hover:-translate-y-0.5">
+                      {link.label}
+                    </span>
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+        </nav>
 
-          {/* Menu trigger — two rules that cross into an X. */}
-          <button
-            type="button"
-            onClick={() => setOpen((v) => !v)}
-            aria-expanded={open}
-            aria-label={open ? 'Close menu' : 'Open menu'}
-            data-cursor="link"
-            className="relative z-[81] flex h-10 w-10 flex-col items-center justify-center gap-2 md:hidden"
+        <div className="flex flex-col items-center gap-1">
+          <ThemeDisc />
+          <Link
+            to="/preferences"
+            aria-label="Preferences"
+            title="Preferences"
+            data-cursor-label="Prefs"
+            className={`grid h-10 w-10 place-items-center transition-colors hover:text-accent-primary ${
+              pathname === '/preferences' ? 'text-accent-primary' : 'text-text-secondary'
+            }`}
           >
-            <span
-              className={`block h-px w-6 bg-text-primary transition-transform duration-500 ease-out-expo ${
-                open ? 'translate-y-[4.5px] rotate-45' : ''
-              }`}
-            />
-            <span
-              className={`block h-px w-6 bg-text-primary transition-transform duration-500 ease-out-expo ${
-                open ? '-translate-y-[4.5px] -rotate-45' : ''
-              }`}
-            />
-          </button>
+            <SlidersHorizontal className="h-4 w-4" />
+          </Link>
         </div>
       </header>
 
+      {/* ---------- Dock (mobile) ---------- */}
+      <header className="fixed inset-x-0 bottom-0 z-[82] flex h-dock items-stretch justify-between border-t border-text-primary/20 bg-bg-secondary px-3 lg:hidden">
+        <Link
+          to="/"
+          onClick={goHome}
+          aria-label="Shrutik Gupta — back to the start"
+          className="flex items-center gap-2 px-2"
+        >
+          <img src={logo} alt="" className="h-6 w-6 object-contain" />
+        </Link>
+
+        <button
+          type="button"
+          onClick={() => setOpen((v) => !v)}
+          aria-expanded={open}
+          aria-controls="contents"
+          className="label flex flex-1 items-center justify-center gap-3 text-text-primary"
+        >
+          {/* Three rules, like the edge of a stack of pages. */}
+          <span className="flex flex-col gap-[3px]" aria-hidden="true">
+            <span className={`block h-[2px] w-5 bg-current transition-transform duration-300 ${open ? 'translate-y-[5px] rotate-45' : ''}`} />
+            <span className={`block h-[2px] w-5 bg-current transition-opacity duration-300 ${open ? 'opacity-0' : ''}`} />
+            <span className={`block h-[2px] w-5 bg-current transition-transform duration-300 ${open ? '-translate-y-[5px] -rotate-45' : ''}`} />
+          </span>
+          {open ? 'Close' : 'Index'}
+        </button>
+
+        <div className="flex items-center">
+          <ThemeDisc />
+        </div>
+      </header>
+
+      {/* ---------- Contents page (mobile) ---------- */}
       <div
+        id="contents"
         ref={menuRef}
-        className="fixed inset-0 z-[80] flex flex-col justify-center bg-bg-secondary px-gutter opacity-0 md:hidden"
-        style={{ pointerEvents: 'none' }}
+        data-lenis-prevent
+        className="fixed inset-0 z-[80] flex flex-col justify-between overflow-y-auto bg-bg-secondary px-gutter pb-[calc(var(--dock)+1.5rem)] pt-8 opacity-0 lg:hidden"
+        style={{ pointerEvents: 'none', visibility: 'hidden' }}
+        aria-hidden={!open}
       >
-        <ul className="flex flex-col gap-2">
-          {LINKS.map((link) => (
-            <li key={link.label} className="line-mask">
+        <p className="label text-text-muted">Contents</p>
+
+        <ul className="my-8 flex flex-col">
+          {LINKS.map((link, i) => (
+            <li key={link.section} className="line-mask border-b border-text-primary/15">
               <button
                 data-menu-item
                 type="button"
-                onClick={() => goTo(link)}
-                className="block py-1 text-fluid-6 leading-[0.95] text-text-primary"
+                tabIndex={open ? 0 : -1}
+                onClick={() => goTo(link.section)}
+                className="flex w-full items-baseline justify-between gap-4 py-3 text-left"
               >
-                {link.label}
+                <span className="display text-fluid-5 text-text-primary">{link.label}</span>
+                <span className="label tabular-nums text-accent-primary">
+                  {String(i + 1).padStart(2, '0')}
+                </span>
               </button>
             </li>
           ))}
-          <li className="line-mask mt-6">
-            <Link
-              data-menu-item
-              to="/preferences"
-              onClick={() => setOpen(false)}
-              className="block text-fluid--1 uppercase tracking-[0.24em] text-text-muted"
-            >
+        </ul>
+
+        <ul className="flex flex-wrap gap-x-6 gap-y-3 text-fluid--1 text-text-secondary">
+          <li>
+            <a href="/resume.pdf" target="_blank" rel="noopener noreferrer" tabIndex={open ? 0 : -1} className="link-ink">
+              Résumé
+            </a>
+          </li>
+          <li>
+            <Link to="/parallel" tabIndex={open ? 0 : -1} onClick={() => setOpen(false)} className="link-ink">
+              Off the record
+            </Link>
+          </li>
+          <li>
+            <Link to="/preferences" tabIndex={open ? 0 : -1} onClick={() => setOpen(false)} className="link-ink">
               Preferences
             </Link>
           </li>
         </ul>
       </div>
+
+      <RouteSlip active={active} />
     </>
   );
 };
